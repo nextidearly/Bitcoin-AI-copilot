@@ -124,7 +124,7 @@ export async function POST(req: Request) {
           return null;
         }
 
-        // console.log('[chat/route] repairToolCall', toolCall);
+        console.log('[chat/route] repairToolCall', toolCall);
 
         const tool = tools[toolCall.toolName as keyof typeof tools];
         const { object: repairedArgs } = await generateObject({

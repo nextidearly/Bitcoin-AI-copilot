@@ -21,10 +21,9 @@ import 'yet-another-react-lightbox/styles.css';
 
 import { getToolConfig } from '@/ai/providers';
 import { ToolResult } from '@/components/message/tool-result';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { useWalletPortfolio } from '@/hooks/use-wallet-portfolio';
 import { uploadImage } from '@/lib/upload';
 import { cn } from '@/lib/utils';
 import { useUser } from '@/hooks/use-user';

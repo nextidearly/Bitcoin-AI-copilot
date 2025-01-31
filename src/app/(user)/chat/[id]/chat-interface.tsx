@@ -20,7 +20,6 @@ import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 
 import { getToolConfig } from '@/ai/providers';
-import Logo from '@/components/logo';
 import { ToolResult } from '@/components/message/tool-result';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';

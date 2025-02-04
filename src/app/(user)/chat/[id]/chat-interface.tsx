@@ -11,7 +11,6 @@ import {
   Image as ImageIcon,
   Link,
   Loader2,
-  SendHorizontal,
   X,
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';

@@ -610,11 +610,11 @@ export default function ChatInterface({
     if (attachments.some((att) => att.uploading)) return;
     if (!user) return;
 
-    // const userData = await getUserData();
+    const userData = await getUserData();
 
-    // if (!userData?.data?.data) return;
+    if (!userData?.data?.data) return;
 
-    if (user.freeMessagesRemaining > 0) {
+    if (userData?.data?.data?.freeMessagesRemaining > 0) {
       const currentAttachments = attachments.map(
         ({ url, name, contentType }) => ({
           url,
@@ -625,7 +625,7 @@ export default function ChatInterface({
       setAttachments([]);
       await handleSubmit(e, { experimental_attachments: currentAttachments });
       scrollToBottom();
-    } else if (user.subscriptionPlan && user.subscriptionExpiry && user.subscriptionExpiry >= new Date()) {
+    } else if (userData?.data?.data?.subscriptionPlan && userData?.data?.data?.subscriptionExpiry && userData?.data?.data?.subscriptionExpiry >= new Date()) {
       const currentAttachments = attachments.map(
         ({ url, name, contentType }) => ({
           url,

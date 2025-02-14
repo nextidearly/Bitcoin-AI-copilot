@@ -61,7 +61,6 @@ function PaymentCard({ user_id, setModel }: { user_id?: string; setModel: (flag:
   const [selectedPlan, setSelectedPlan] = React.useState<BillingPlan>('semiannual');
   const [open, setOpen] = React.useState(false);
   const [isProcessing, setIsProcessing] = React.useState('');
-  const router = useRouter();
 
   const handleError = (error: any) => {
     if (error?.error?.message) toast.error(error.error.message);

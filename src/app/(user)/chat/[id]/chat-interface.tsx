@@ -614,8 +614,6 @@ export default function ChatInterface({
 
     if (!userData?.data?.data) return;
 
-    console.log('User data:', userData.data.data.freeMessagesRemaining);
-
     if (userData?.data?.data?.freeMessagesRemaining > 0) {
       const currentAttachments = attachments.map(
         ({ url, name, contentType }) => ({

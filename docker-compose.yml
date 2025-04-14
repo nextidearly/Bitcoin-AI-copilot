@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  halo-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+      target: dev
+    container_name: 'halo-app'
+    depends_on:
+      halo-db:
+        condition: service_healthy
+    expose:
+      - '3000'
+    ports:
+      - '3000:3000'
+    working_dir: /usr/src/app
+    command: '/bin/bash ./local_entrypoint.sh'
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@halo-db:5432/halodb
+      - DIRECT_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@halo-db:5432/halodb
+    volumes:
+      - .:/usr/src/app
+      - root_node_modules:/usr/src/app/node_modules
+      - webapp_next:/usr/src/app/.next
+
+  halo-studio:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+      target: dev
+    container_name: 'halo-studio'
+    depends_on:
+      halo-db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@halo-db:5432/halodb
+    expose:
+      - '5555'
+    ports:
+      - '5555:5555'
+    working_dir: /usr/src/app
+    command: 'pnpm npx prisma studio'
+    volumes:
+      - .:/usr/src/app
+      - root_node_modules:/usr/src/app/node_modules
+      - webapp_next:/usr/src/app/.next
+
+  halo-db:
+    image: 'postgres:15'
+    container_name: 'halo-db'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - '5432:5432'
+    volumes:
+      - 'halo-db-data:/var/lib/postgresql/data'
+
+volumes:
+  halo-db-data:
+  root_node_modules:
+  webapp_next:

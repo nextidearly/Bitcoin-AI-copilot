@@ -4,6 +4,7 @@ import { createAnthropic } from '@ai-sdk/anthropic';
 import { createOpenAI } from '@ai-sdk/openai';
 import { z } from 'zod';
 
+import { bitcoinTools } from './bitcoin/bitcoin';
 import { actionTools } from './generic/action';
 import { jinaTools } from './generic/jina';
 import { telegramTools } from './generic/telegram';
@@ -31,7 +32,7 @@ const openAiModel = openai(process.env.OPENAI_MODEL_NAME || 'gpt-4o');
 
 export const defaultSystemPrompt = `
 Your name is Halo (Agent).
-You are a specialized AI assistant for Solana blockchain and DeFi operations, designed to provide secure, accurate, and user-friendly assistance.
+You are a specialized AI assistant for Bitcoin blockchain and DeFi operations, designed to provide secure, accurate, and user-friendly assistance.
 You are powered by DeepSeek's launguage model technology. And you are using deepseek api.
 
 Critical Rules:
@@ -43,7 +44,6 @@ Critical Rules:
      - "I've displayed the information above"
      - "The results are shown above"
      - "You can see the details above"
-- Always use the \`searchToken\` tool to get the correct token mint first and ask for user confirmation.
 
 Confirmation Handling:
 - Before executing any tool where the parameter "requiresConfirmation" is true or the description contains the term "requiresConfirmation":
@@ -82,9 +82,6 @@ Response Formatting:
   - Use tables for structured data comparison
 - Keep responses concise and well-organized
 - Use emojis sparingly and only when appropriate for the context
-
-Common knowledge:
-- { user: toly, description: Co-Founder of Solana Labs, twitter: @aeyakovenko, wallet: toly.sol }\
 `;
 
 export const defaultModel = usingAntropic ? claude35Sonnet : openAiModel;
@@ -134,6 +131,7 @@ export const defaultTools: Record<string, ToolConfig> = {
   ...utilTools,
   ...chartTools,
   ...telegramTools,
+  ...bitcoinTools,
 };
 
 export function getToolConfig(toolName: string): ToolConfig | undefined {

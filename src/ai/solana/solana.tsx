@@ -292,51 +292,51 @@ const wallet = {
       return await SolanaUtils.resolveDomainToAddress(domain);
     },
   },
-  getWalletPortfolio: {
-    displayName: '🏦 Wallet Portfolio',
-    description:
-      'Get the portfolio of a Solana wallet, including detailed token information & total value, SOL value etc.',
-    parameters: z.object({ walletAddress: publicKeySchema }),
-    execute: async ({ walletAddress }: { walletAddress: string }) => {
-      try {
-        const { fungibleTokens } = await searchWalletAssets(walletAddress);
-        const portfolio = transformToPortfolio(
-          walletAddress,
-          fungibleTokens,
-          [],
-        );
+  // getWalletPortfolio: {
+  //   displayName: '🏦 Wallet Portfolio',
+  //   description:
+  //     'Get the portfolio of a Solana wallet, including detailed token information & total value, SOL value etc.',
+  //   parameters: z.object({ walletAddress: publicKeySchema }),
+  //   execute: async ({ walletAddress }: { walletAddress: string }) => {
+  //     try {
+  //       const { fungibleTokens } = await searchWalletAssets(walletAddress);
+  //       const portfolio = transformToPortfolio(
+  //         walletAddress,
+  //         fungibleTokens,
+  //         [],
+  //       );
 
-        // First, separate SOL from other tokens
-        const solToken = portfolio.tokens.find(
-          (token) => token.symbol === 'SOL',
-        );
-        const otherTokens = portfolio.tokens
-          .filter((token) => token.symbol !== 'SOL')
-          .filter((token) => token.balance * token.pricePerToken > 10)
-          .sort(
-            (a, b) => b.balance * b.pricePerToken - a.balance * a.pricePerToken,
-          )
-          .slice(0, 9); // Take 9 instead of 10 to leave room for SOL
+  //       // First, separate SOL from other tokens
+  //       const solToken = portfolio.tokens.find(
+  //         (token) => token.symbol === 'SOL',
+  //       );
+  //       const otherTokens = portfolio.tokens
+  //         .filter((token) => token.symbol !== 'SOL')
+  //         .filter((token) => token.balance * token.pricePerToken > 10)
+  //         .sort(
+  //           (a, b) => b.balance * b.pricePerToken - a.balance * a.pricePerToken,
+  //         )
+  //         .slice(0, 9); // Take 9 instead of 10 to leave room for SOL
 
-        // Combine SOL with other tokens, ensuring SOL is first
-        portfolio.tokens = solToken ? [solToken, ...otherTokens] : otherTokens;
+  //       // Combine SOL with other tokens, ensuring SOL is first
+  //       portfolio.tokens = solToken ? [solToken, ...otherTokens] : otherTokens;
 
-        return {
-          suppressFollowUp: true,
-          data: portfolio,
-        };
-      } catch (error) {
-        throw new Error(
-          `Failed to get wallet portfolio: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        );
-      }
-    },
-    render: (raw: unknown) => {
-      const result = (raw as { data: any }).data;
-      if (!result || typeof result !== 'object') return null;
-      return <WalletPortfolio data={result} />;
-    },
-  },
+  //       return {
+  //         suppressFollowUp: true,
+  //         data: portfolio,
+  //       };
+  //     } catch (error) {
+  //       throw new Error(
+  //         `Failed to get wallet portfolio: ${error instanceof Error ? error.message : 'Unknown error'}`,
+  //       );
+  //     }
+  //   },
+  //   render: (raw: unknown) => {
+  //     const result = (raw as { data: any }).data;
+  //     if (!result || typeof result !== 'object') return null;
+  //     return <WalletPortfolio data={result} />;
+  //   },
+  // },
 };
 
 const swap = {

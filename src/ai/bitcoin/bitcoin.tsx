@@ -405,6 +405,39 @@ export const bitcoinBRC20Tool = {
   },
 };
 
+// 5. Runes Tool
+export const bitcoinRunesTool = {
+  getBitcoinRunes: {
+    displayName: '▣ Runes',
+    description: 'Get all Rune balances for a Bitcoin address',
+    parameters: z.object({
+      address: z
+        .string()
+        .regex(
+          /^([13][a-km-zA-HJ-NP-Z1-9]{25,34}|bc1[a-z0-9]{39,59})$/i,
+          'Invalid Bitcoin address',
+        ),
+    }),
+    execute: async ({ address }: BitcoinAddressParam) => {
+      const runes = await fetchWalletRunes(address);
+      return { data: { address, runes } };
+    },
+    render: ({ data }: { data: { address: string; runes: RuneBalance[] } }) => (
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <p className="text-2xl">▣</p>
+          <h3 className="font-medium">Runes ({data.runes.length})</h3>
+        </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {data.runes.map((rune) => (
+            <TokenCard key={rune.name} token={rune} type="rune" />
+          ))}
+        </div>
+      </div>
+    ),
+  },
+};
+
 // 6. Bitcoin price Tool
 export const getBitcoinPriceTool = {
   getBitcoinPrice: {

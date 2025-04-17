@@ -37,21 +37,33 @@ export const SUGGESTIONS = [
   },
   {
     id: 'wallet-portfolio',
-    title: 'Show me wallet balance of [Bitcoin address]',
+    title: 'Show wallet balance of [address]',
     subtitle:
       'get wallet balance including btc, utxos, inscriptions, brc20 and runes',
     icon: LineChart,
   },
   {
-    id: 'check-activity',
-    title: 'Scan the recent activities of [collection/runes]',
-    subtitle: 'get list the recent activites for a collection or rune',
+    id: 'check-collection-activity',
+    title: 'Recent activities of [collection symbol]',
+    subtitle: 'get list the recent activites for a collection',
     icon: ActivityIcon,
   },
   {
-    id: 'check-statistic',
-    title: 'Scan the statistic data of [collection/runes]',
-    subtitle: 'get the statistic data for a collection or rune',
+    id: 'check-rune-activity',
+    title: 'Recent activities of [rune name]',
+    subtitle: 'get list the recent activites for a rune',
+    icon: ActivityIcon,
+  },
+  {
+    id: 'check-collection-statistic',
+    title: 'Statistic data of [collection symbol]',
+    subtitle: 'get the statistic data for a collection',
+    icon: List,
+  },
+  {
+    id: 'check-rune-statistic',
+    title: 'Statistic data of [rune name]',
+    subtitle: 'get the statistic data for a rune',
     icon: List,
   },
 ];

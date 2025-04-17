@@ -33,9 +33,7 @@ export function SuggestionCard({
       <motion.div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-gray-600/60 bg-gray-700/90 shadow-sm">
         <Icon size={20} className="h-8 w-8 text-white" />
       </motion.div>
-      <div className="text-smooth mt-4 text-lg font-bold text-gray-700">
-        {title}
-      </div>
+      <div className="text-smooth mt-4 font-bold text-gray-700">{title}</div>
       <div className="text-sm text-muted-foreground/80">{subtitle}</div>
     </motion.button>
   );

@@ -377,7 +377,6 @@ export const bitcoinInscriptionsTool = {
 export const bitcoinBRC20Tool = {
   getBitcoinBRC20: {
     displayName: '🏷️ BRC20 Tokens',
-    isCollapsible: true,
     description: 'Get all BRC20 token balances for an address',
     parameters: z.object({
       address: z
@@ -411,7 +410,6 @@ export const bitcoinBRC20Tool = {
 export const bitcoinRunesTool = {
   getBitcoinRunes: {
     displayName: '▣ Runes',
-    isCollapsible: true,
     description: 'Get all Rune balances for an address',
     parameters: z.object({
       address: z

@@ -12,7 +12,7 @@ index 280aa7564613238857477f791f7f7522a8faca83..b9345cbcc4ffc31665e51ecc9ad6396d
 +
  /**
   * Swap tokens using Jupiter Exchange
-  * @param agent SolanaAgentKit instance
+  * @param agent BitcoinAgentKit instance
 @@ -29,7 +33,8 @@ async function trade(agent, outputMint, inputAmount, inputMint = constants_1.TOK
              `&amount=${scaledAmount}` +
              `&slippageBps=${slippageBps}` +

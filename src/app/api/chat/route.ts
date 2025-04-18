@@ -95,7 +95,6 @@ export async function POST(req: Request) {
     const systemPrompt =
       defaultSystemPrompt +
       `\n\nHistory of attachments: ${JSON.stringify(attachments)}` +
-      `\n\nUser Solana wallet public key: ${publicKey}` +
       `\n\nUser ID: ${userId}` +
       `\n\nConversation ID: ${conversationId}`;
 

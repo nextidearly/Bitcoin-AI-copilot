@@ -552,8 +552,6 @@ export default function ChatInterface({
       body: { id },
       onFinish: () => {
         window.history.replaceState({}, '', `/chat/${id}`);
-        // Refresh wallet portfolio after AI response
-        refresh();
       },
     });
 
@@ -563,11 +561,6 @@ export default function ChatInterface({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { attachments, setAttachments, handleImageUpload, removeAttachment } =
     useImageUpload();
-  const {
-    data: portfolio,
-    isLoading: isPortfolioLoading,
-    refresh,
-  } = useWalletPortfolio();
 
   const scrollToBottom = useCallback(() => {
     if (messagesEndRef.current) {

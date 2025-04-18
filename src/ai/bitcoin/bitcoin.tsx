@@ -230,7 +230,7 @@ const TokenCard = ({
 export const bitcoinBalanceTool = {
   getBitcoinBalance: {
     displayName: '💰 Bitcoin Balance',
-    description: 'Get the total BTC balance for a Bitcoin address',
+    description: 'Get the total BTC balance for an address',
     parameters: z.object({
       address: z
         .string()
@@ -243,6 +243,7 @@ export const bitcoinBalanceTool = {
       const utxos = await fetchWalletUTXOs(address);
       const balance = utxos.reduce((sum, utxo) => sum + utxo.value, 0);
       return {
+        suppressFollowUp: true,
         data: {
           address,
           balance,
@@ -282,7 +283,7 @@ export const bitcoinBalanceTool = {
 export const bitcoinUtxosTool = {
   getBitcoinUTXOs: {
     displayName: '📦 Bitcoin UTXOs',
-    description: 'Get all UTXOs owned by a Bitcoin address',
+    description: 'Get all UTXOs owned by an address',
     parameters: z.object({
       address: z
         .string()
@@ -293,7 +294,7 @@ export const bitcoinUtxosTool = {
     }),
     execute: async ({ address }: BitcoinAddressParam) => {
       const utxos = await fetchWalletUTXOs(address);
-      return { data: { address, utxos } };
+      return { suppressFollowUp: true, data: { address, utxos } };
     },
     render: ({ data }: { data: { address: string; utxos: BitcoinUTXO[] } }) => {
       return (
@@ -325,7 +326,7 @@ export const bitcoinUtxosTool = {
 export const bitcoinInscriptionsTool = {
   getBitcoinInscriptions: {
     displayName: '⦿ Bitcoin Inscriptions',
-    description: 'Get all inscriptions owned by a Bitcoin address',
+    description: 'Get all inscriptions owned by an address',
     parameters: z.object({
       address: z
         .string()
@@ -340,7 +341,7 @@ export const bitcoinInscriptionsTool = {
       page,
     }: BitcoinAddressParam & { page?: number }) => {
       const inscriptions = await fetchWalletInscriptions(address);
-      return { data: { address, inscriptions } };
+      return { suppressFollowUp: true, data: { address, inscriptions } };
     },
     render: ({
       data,
@@ -376,7 +377,8 @@ export const bitcoinInscriptionsTool = {
 export const bitcoinBRC20Tool = {
   getBitcoinBRC20: {
     displayName: '🏷️ BRC20 Tokens',
-    description: 'Get all BRC20 token balances for a Bitcoin address',
+    isCollapsible: true,
+    description: 'Get all BRC20 token balances for an address',
     parameters: z.object({
       address: z
         .string()
@@ -387,7 +389,7 @@ export const bitcoinBRC20Tool = {
     }),
     execute: async ({ address }: BitcoinAddressParam) => {
       const brc20 = await fetchWalletBRC20(address);
-      return { data: { address, brc20 } };
+      return { suppressFollowUp: true, data: { address, brc20 } };
     },
     render: ({ data }: { data: { address: string; brc20: BRC20Token[] } }) => (
       <div className="space-y-3">
@@ -409,7 +411,8 @@ export const bitcoinBRC20Tool = {
 export const bitcoinRunesTool = {
   getBitcoinRunes: {
     displayName: '▣ Runes',
-    description: 'Get all Rune balances for a Bitcoin address',
+    isCollapsible: true,
+    description: 'Get all Rune balances for an address',
     parameters: z.object({
       address: z
         .string()
@@ -420,7 +423,7 @@ export const bitcoinRunesTool = {
     }),
     execute: async ({ address }: BitcoinAddressParam) => {
       const runes = await fetchWalletRunes(address);
-      return { data: { address, runes } };
+      return { suppressFollowUp: true, data: { address, runes } };
     },
     render: ({ data }: { data: { address: string; runes: RuneBalance[] } }) => (
       <div className="space-y-3">

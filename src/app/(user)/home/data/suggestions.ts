@@ -1,12 +1,12 @@
 import { ComponentType } from 'react';
 
 import {
-  ArrowUpRight,
-  DollarSign,
-  RefreshCw,
-  Rocket,
-  TrendingUp,
-  Wallet,
+  ActivityIcon,
+  BanknoteIcon,
+  Bitcoin,
+  LineChart,
+  List,
+  Nfc,
 } from 'lucide-react';
 
 export interface Suggestion {
@@ -16,42 +16,43 @@ export interface Suggestion {
   icon: ComponentType<{ size?: number; className?: string }>;
 }
 
-export const SUGGESTIONS: Suggestion[] = [
+export const SUGGESTIONS = [
   {
-    id: 'launch-token',
-    title: 'Launch a new token',
-    subtitle: 'deploy a new token on pump.fun',
-    icon: Rocket,
+    id: 'btc-price',
+    title: "What's Bitcoin's price?",
+    subtitle: 'get the latest BTC/USD rate',
+    icon: Bitcoin,
   },
   {
-    id: 'swap-sol-usdc',
-    title: 'Swap 1 SOL for USDC',
-    subtitle: 'using Jupiter to swap on Solana',
-    icon: RefreshCw,
+    id: 'trending-collections',
+    title: 'Trending collections today',
+    subtitle: 'get list trending collections',
+    icon: Nfc,
   },
   {
-    id: 'solana-trends',
-    title: "What's trending on Solana?",
-    subtitle: 'find the current market trends',
-    icon: TrendingUp,
+    id: 'trending-runes',
+    title: 'Trending runes this week',
+    subtitle: 'get list trending runes this week',
+    icon: BanknoteIcon,
   },
   {
-    id: 'price-feed',
-    title: "What's the price of SOL?",
-    subtitle: 'find the current price of SOL',
-    icon: DollarSign,
+    id: 'wallet-portfolio',
+    title: 'Show me wallet balance of [Bitcoin address]',
+    subtitle:
+      'get wallet balance including btc, utxos, inscriptions, brc20 and runes',
+    icon: LineChart,
   },
   {
-    id: 'top-gainers-last-24h',
-    title: 'Top gainers in the last 24h',
-    subtitle: 'find the top gainers in the last 24 hours',
-    icon: ArrowUpRight,
+    id: 'check-activity',
+    title: 'Scan the recent activities of [collection/runes]',
+    subtitle: 'get list the recent activites for a collection or rune',
+    icon: ActivityIcon,
   },
   {
-    id: 'check-my-wallet',
-    title: 'Check my wallet',
-    subtitle: 'check the portfolio of your wallet',
-    icon: Wallet,
+    id: 'check-statistic',
+    title: 'Scan the statistic data of [collection/runes]',
+    subtitle: 'get the statistic data for a collection or rune',
+    icon: List,
   },
 ];
 

@@ -5,17 +5,11 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { z } from 'zod';
 
 import { bitcoinTools } from './bitcoin/bitcoin';
+import { magicEdenTools } from './bitcoin/magic-eden';
 import { actionTools } from './generic/action';
 import { jinaTools } from './generic/jina';
 import { telegramTools } from './generic/telegram';
 import { utilTools } from './generic/util';
-import { chartTools } from './solana/chart';
-import { definedTools } from './solana/defined-fi';
-import { dexscreenerTools } from './solana/dexscreener';
-import { jupiterTools } from './solana/jupiter';
-import { magicEdenTools } from './solana/magic-eden';
-import { pumpfunTools } from './solana/pumpfun';
-import { solanaTools } from './solana/solana';
 
 const usingAntropic = !!process.env.ANTHROPIC_API_KEY;
 
@@ -40,10 +34,10 @@ Critical Rules:
   Do not respond with anything.
 - If the previous tool result contains the key-value pair 'suppressFollowUp: true':
   Response only with something like:
-     - "Take a look at the results above"
-     - "I've displayed the information above"
-     - "The results are shown above"
-     - "You can see the details above"
+     - "Take a look at the results"
+     - "I've displayed the information"
+     - "The results are shown"
+     - "You can see the details"
 
 Confirmation Handling:
 - Before executing any tool where the parameter "requiresConfirmation" is true or the description contains the term "requiresConfirmation":
@@ -96,7 +90,7 @@ export interface ToolConfig {
   execute: <T>(
     params: z.infer<T extends z.ZodType ? T : never>,
   ) => Promise<any>;
-  render?: (result: unknown) => React.ReactNode | null;
+  render?: (result: any) => React.ReactNode | null;
   agentKit?: any;
   requiresConfirmation?: boolean;
 }
@@ -121,15 +115,9 @@ export function DefaultToolResultRenderer({ result }: { result: unknown }) {
 
 export const defaultTools: Record<string, ToolConfig> = {
   ...actionTools,
-  ...solanaTools,
-  ...definedTools,
-  ...pumpfunTools,
-  ...jupiterTools,
-  ...dexscreenerTools,
   ...magicEdenTools,
   ...jinaTools,
   ...utilTools,
-  ...chartTools,
   ...telegramTools,
   ...bitcoinTools,
 };

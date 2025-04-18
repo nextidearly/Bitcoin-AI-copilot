@@ -17,7 +17,7 @@ const eslintConfig = [
       'src/components/ui/**/*',
       'src/hooks/*',
       'src/hooks/**/*',
-      'src/app/api/**/*',
+      'src/app/api/chat/*',
     ],
   },
   {

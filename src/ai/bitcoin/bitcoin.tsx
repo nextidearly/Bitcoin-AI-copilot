@@ -443,7 +443,6 @@ export const bitcoinRunesTool = {
 export const getBitcoinPriceTool = {
   getBitcoinPrice: {
     displayName: '💰 Get Bitcoin Price',
-    isCollapsible: true,
     description: 'Get the current price of Bitcoin (BTC) in USD',
     parameters: z.object({}), // No parameters needed
     execute: async () => {

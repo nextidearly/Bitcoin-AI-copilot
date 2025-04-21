@@ -57,7 +57,7 @@ export default function PaymentCard({
         return toast.error('UniSat Wallet is not installed!');
       }
 
-      let txid = await window?.unisat.sendBitcoin(
+      const txid = await window?.unisat.sendBitcoin(
         RECEIVE_WALLET_ADDRESS,
         EAP_PRICE * 10 ** 8,
       );
@@ -238,7 +238,7 @@ export default function PaymentCard({
             type: BitcoinNetworkType.Mainnet,
           },
         },
-        onFinish: (response) => {
+        onFinish: (response: any) => {
           senderAddress = response.addresses[0].address;
         },
         onCancel: () => {
@@ -260,8 +260,7 @@ export default function PaymentCard({
           ],
           senderAddress: senderAddress!,
         },
-        onFinish: async (response) => {
-          console.log(response);
+        onFinish: async () => {
           await fetch('/api/user', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },

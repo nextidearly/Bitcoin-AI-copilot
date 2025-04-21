@@ -12,6 +12,7 @@ import { Loader2 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 import ChatInterface from '@/app/(user)/chat/[id]/chat-interface';
+import PaymentCard from '@/components/payment-card';
 import BlurFade from '@/components/ui/blur-fade';
 import TypingAnimation from '@/components/ui/typing-animation';
 import { useConversations } from '@/hooks/use-conversations';
@@ -28,6 +29,7 @@ export function HomeContent() {
   const [showChat, setShowChat] = useState(false);
   const [chatId, setChatId] = useState(() => uuidv4());
   const { user, isLoading } = useUser();
+  const [showPayment, setShowPayment] = useState(false);
   const router = useRouter();
 
   const { login } = useLogin({
@@ -60,6 +62,11 @@ export function HomeContent() {
 
     if (!user) {
       login();
+      return;
+    }
+
+    if (!user.earlyAccess) {
+      setShowPayment(true);
       return;
     }
 
@@ -182,6 +189,10 @@ export function HomeContent() {
       >
         <ChatInterface id={chatId} initialMessages={messages} />
       </div>
+
+      {showPayment && (
+        <PaymentCard user_id={user?.id} setModel={setShowPayment} />
+      )}
     </div>
   );
 }

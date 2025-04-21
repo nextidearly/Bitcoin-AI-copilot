@@ -311,3 +311,23 @@ export async function dbGetUserTelegramId({ userId }: { userId: string }) {
     return null;
   }
 }
+
+/**
+ * Give early access for a user
+ * @param {Object} params - The parameters object
+ * @param {string} params.userId - The ID of the user
+ * @returns {Promise<string | null>} The Telegram ID or null if not found/error occurs
+ */
+export async function dbUpdateEarlyAccess({ userId }: { userId: string }) {
+  try {
+    return await prisma.user.update({
+      where: { id: userId },
+      data: { earlyAccess: true },
+    });
+  } catch (error) {
+    console.error('[DB Error] Failed to update user data:', {
+      error,
+    });
+    return null;
+  }
+}

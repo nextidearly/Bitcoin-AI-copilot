@@ -66,7 +66,6 @@ export function HomeContent() {
     }
 
     if (!user.earlyAccess) {
-      setShowPayment(true);
       return;
     }
 

@@ -32,7 +32,7 @@ export default function PaymentCard({
   setModel,
 }: {
   user_id: string | undefined;
-  setModel: Function;
+  setModel: (flag: boolean) => void;
 }) {
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState('');

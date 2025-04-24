@@ -65,10 +65,10 @@ export function HomeContent() {
       return;
     }
 
-    // if (!user.earlyAccess) {
-    //   setShowPayment(true);
-    //   return;
-    // }
+    if (!user.earlyAccess) {
+      setShowPayment(true);
+      return;
+    }
 
     const fakeEvent = new Event('submit') as any;
     fakeEvent.preventDefault = () => {};

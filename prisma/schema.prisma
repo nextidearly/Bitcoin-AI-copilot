@@ -9,13 +9,16 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  privyId   String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 String   @id @default(cuid())
+  privyId            String   @unique
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
-  earlyAccess Boolean @default(false)
-  telegramId  String?
+  earlyAccess        Boolean  @default(false)
+  telegramId         String?
+  freeMessagesRemaining Int   @default(10)
+  subscriptionPlan   String?
+  subscriptionExpiry DateTime?
 
   wallets       Wallet[]
   conversations Conversation[]

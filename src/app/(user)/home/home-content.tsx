@@ -65,15 +65,21 @@ export function HomeContent() {
       return;
     }
 
-    if (!user.earlyAccess) {
-      setShowPayment(true);
-      return;
-    }
+    console.log('user', user);
+
+    console.log("freeMessagesRemaining", user.freeMessagesRemaining)
+
+    // if (!user.earlyAccess) {
+    //   setShowPayment(true);
+    //   return;
+    // }
 
     const fakeEvent = new Event('submit') as any;
     fakeEvent.preventDefault = () => {};
 
     await handleSubmit(fakeEvent, { data: { content: value } });
+
+    
     setShowChat(true);
     window.history.replaceState(null, '', `/chat/${chatId}`);
   };

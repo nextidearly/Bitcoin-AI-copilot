@@ -23,7 +23,7 @@ export type PrismaUser = _PrismaUser & {
 
 export type HaloUser = Pick<
   PrismaUser,
-  'id' | 'privyId' | 'createdAt' | 'updatedAt' | 'earlyAccess' | 'wallets'
+  'id' | 'privyId' | 'createdAt' | 'updatedAt' | 'earlyAccess' | 'wallets' | 'freeMessagesRemaining' | 'subscriptionExpiry' | 'subscriptionPlan'
 > & {
   privyUser: PrivyUser;
   hasEAP: boolean;

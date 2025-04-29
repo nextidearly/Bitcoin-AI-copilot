@@ -156,3 +156,78 @@ export const getUserData = actionClient.action<ActionResponse<PrismaUser>>(
     }
   },
 );
+
+export const decreaseFreeMessages = actionClient.action<
+  ActionResponse<{ remaining: number }>
+>(async () => {
+  const token = (await cookies()).get('privy-token')?.value;
+
+  if (!token) {
+    return {
+      success: false,
+      error: 'No privy token found',
+    };
+  }
+
+  try {
+    const claims = await PRIVY_SERVER_CLIENT.verifyAuthToken(token);
+    
+    // Get current user's free message count
+    const user = await prisma.user.findUnique({
+      where: { privyId: claims.userId },
+      select: { 
+        id: true,
+        freeMessagesRemaining: true,
+        subscriptionPlan: true,
+        subscriptionExpiry: true 
+      },
+    });
+
+    if (!user) {
+      return {
+        success: false,
+        error: 'User not found',
+      };
+    }
+
+    // Check if user has active subscription
+    const hasActiveSubscription = user.subscriptionPlan && 
+      (user.subscriptionExpiry === null || user.subscriptionExpiry > new Date());
+
+    // Don't decrease if user has active subscription
+    if (hasActiveSubscription) {
+      return {
+        success: true,
+        data: { remaining: user.freeMessagesRemaining },
+      };
+    }
+
+    // Don't decrease if already 0
+    if (user.freeMessagesRemaining <= 0) {
+      return {
+        success: true,
+        data: { remaining: 0 },
+      };
+    }
+
+    // Decrease the count
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: { 
+        freeMessagesRemaining: { decrement: 1 } 
+      },
+      select: { freeMessagesRemaining: true },
+    });
+
+    return {
+      success: true,
+      data: { remaining: updatedUser.freeMessagesRemaining },
+    };
+  } catch (error) {
+    console.error('Error decreasing free messages:', error);
+    return {
+      success: false,
+      error: 'Failed to update message count',
+    };
+  }
+});

@@ -463,7 +463,6 @@ export const getBitcoinPriceTool = {
       }
     },
     render: (result: unknown) => {
-      console.log(result);
 
       const typedResult = result as {
         success: boolean;

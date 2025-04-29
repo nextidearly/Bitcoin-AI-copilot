@@ -65,23 +65,24 @@ export function HomeContent() {
       return;
     }
 
-    console.log('user', user);
-
-    console.log("freeMessagesRemaining", user.freeMessagesRemaining)
-
-    // if (!user.earlyAccess) {
-    //   setShowPayment(true);
-    //   return;
-    // }
-
     const fakeEvent = new Event('submit') as any;
     fakeEvent.preventDefault = () => {};
 
-    await handleSubmit(fakeEvent, { data: { content: value } });
+    if (user.freeMessagesRemaining > 0) {
+      await handleSubmit(fakeEvent, { data: { content: value } });
+      user.freeMessagesRemaining -= 1;
 
-    
-    setShowChat(true);
-    window.history.replaceState(null, '', `/chat/${chatId}`);
+      setShowChat(true);
+      window.history.replaceState(null, '', `/chat/${chatId}`);
+    } else if (user.subscriptionPlan && user.subscriptionExpiry && user.subscriptionExpiry >= new Date()) {
+      await handleSubmit(fakeEvent, { data: { content: value } });
+
+      setShowChat(true);
+      window.history.replaceState(null, '', `/chat/${chatId}`);
+    } else {
+      setShowPayment(true);
+      return;
+    }
   };
 
   // Reset chat when pathname changes to /home

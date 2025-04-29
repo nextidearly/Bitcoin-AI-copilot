@@ -22,7 +22,7 @@ import {
   sanitizeResponseMessages,
 } from '@/lib/utils/ai';
 import { generateTitleFromUserMessage } from '@/server/actions/ai';
-import { verifyUser } from '@/server/actions/user';
+import { decreaseFreeMessages, verifyUser } from '@/server/actions/user';
 import {
   dbCreateConversation,
   dbCreateMessages,
@@ -30,6 +30,7 @@ import {
   dbDeleteConversation,
   dbGetConversation,
 } from '@/server/db/queries';
+import { on } from 'events';
 
 export const maxDuration = 60;
 
@@ -46,6 +47,7 @@ export async function POST(req: Request) {
     console.error('[chat/route] No public key found');
     return new Response('No public key found', { status: 400 });
   }
+  
 
   try {
     const {
@@ -148,6 +150,8 @@ export async function POST(req: Request) {
       messages: relevantMessages,
       async onFinish({ response, usage }) {
         if (!userId) return;
+
+       await decreaseFreeMessages();
 
         try {
           const sanitizedResponses = sanitizeResponseMessages(

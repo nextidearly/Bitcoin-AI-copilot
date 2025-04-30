@@ -29,6 +29,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { useWalletPortfolio } from '@/hooks/use-wallet-portfolio';
 import { uploadImage } from '@/lib/upload';
 import { cn } from '@/lib/utils';
+import { useUser } from '@/hooks/use-user';
+import PaymentCard from '@/components/payment-card';
+import { getUserData } from '@/server/actions/user';
 
 // Types
 interface UploadingImage extends Attachment {
@@ -389,9 +392,9 @@ function ImagePreviewDialog({
 
   const slides = previewImage.attachments
     ? previewImage.attachments.map((attachment) => ({
-        src: attachment.url,
-        alt: attachment.name,
-      }))
+      src: attachment.url,
+      alt: attachment.name,
+    }))
     : [{ src: previewImage.src, alt: previewImage.alt }];
 
   const isSingleImage = slides.length === 1;
@@ -545,6 +548,8 @@ export default function ChatInterface({
   id: string;
   initialMessages?: Message[];
 }) {
+  const { user } = useUser();
+
   const { messages, input, handleSubmit, handleInputChange, isLoading } =
     useChat({
       id,
@@ -561,6 +566,8 @@ export default function ChatInterface({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { attachments, setAttachments, handleImageUpload, removeAttachment } =
     useImageUpload();
+  const [showPayment, setShowPayment] = useState(false);
+
 
   const scrollToBottom = useCallback(() => {
     if (messagesEndRef.current) {
@@ -597,19 +604,44 @@ export default function ChatInterface({
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!input.trim() && attachments.length === 0) return;
     if (attachments.some((att) => att.uploading)) return;
+    if (attachments.some((att) => att.uploading)) return;
+    if (!user) return;
 
-    const currentAttachments = attachments.map(
-      ({ url, name, contentType }) => ({
-        url,
-        name,
-        contentType,
-      }),
-    );
-    setAttachments([]);
-    await handleSubmit(e, { experimental_attachments: currentAttachments });
-    scrollToBottom();
+    const userData = await getUserData();
+
+    if (!userData?.data?.data) return;
+
+    console.log('User data:', userData.data.data.freeMessagesRemaining);
+
+    if (userData?.data?.data?.freeMessagesRemaining > 0) {
+      const currentAttachments = attachments.map(
+        ({ url, name, contentType }) => ({
+          url,
+          name,
+          contentType,
+        }),
+      );
+      setAttachments([]);
+      await handleSubmit(e, { experimental_attachments: currentAttachments });
+      scrollToBottom();
+    } else if (userData?.data?.data?.subscriptionPlan && userData?.data?.data?.subscriptionExpiry && userData?.data?.data?.subscriptionExpiry >= new Date()) {
+      const currentAttachments = attachments.map(
+        ({ url, name, contentType }) => ({
+          url,
+          name,
+          contentType,
+        }),
+      );
+      setAttachments([]);
+      await handleSubmit(e, { experimental_attachments: currentAttachments });
+      scrollToBottom();
+    } else {
+      setShowPayment(true);
+      return;
+    }
   };
 
   useAnimationEffect();
@@ -737,6 +769,10 @@ export default function ChatInterface({
         previewImage={previewImage}
         onClose={() => setPreviewImage(null)}
       />
+
+      {showPayment && (
+        <PaymentCard user_id={user?.id} setModel={setShowPayment} />
+      )}
     </div>
   );
 }

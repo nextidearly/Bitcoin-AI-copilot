@@ -66,7 +66,8 @@ export function HomeContent() {
     }
 
     const fakeEvent = new Event('submit') as any;
-    fakeEvent.preventDefault = () => {};
+    fakeEvent.preventDefault = () => { };
+
 
     if (user.freeMessagesRemaining > 0) {
       await handleSubmit(fakeEvent, { data: { content: value } });

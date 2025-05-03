@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import * as React from "react";
+import { ChevronDownIcon } from "@radix-ui/react-icons";
+import Image from "next/image";
+import { toast } from "sonner";
+import { CollapsibleContent, CollapsibleTrigger, Collapsible } from "@radix-ui/react-collapsible";
+import { useRouter } from "next/navigation";
 import {
   AddressPurpose,
   BitcoinNetworkType,
@@ -8,7 +11,6 @@ import {
   getProviderById,
   sendBtcTransaction,
 } from 'sats-connect';
-import { toast } from 'sonner';
 
 declare global {
   interface Window {
@@ -26,43 +28,40 @@ interface PlanDetails {
   priceBTC: number;
   discount?: string;
   description: string;
+  popular?: boolean;
 }
 
 const RECEIVE_WALLET_ADDRESS = process.env.NEXT_PUBLIC_EAP_RECEIVE_WALLET_ADDRESS!;
 
-export default function PaymentCard({
-  user_id,
-  setModel,
-}: {
-  user_id: string | undefined;
-  setModel: (flag: boolean) => void;
-}) {
-  const router = useRouter();
-  const [isProcessing, setIsProcessing] = useState('');
-  const [selectedPlan, setSelectedPlan] = useState<BillingPlan>('monthly');
+const PLANS: PlanDetails[] = [
+  {
+    id: 'monthly',
+    name: 'Monthly',
+    priceBTC: 0.0001,
+    description: 'Flexible monthly subscription',
+  },
+  {
+    id: 'semiannual',
+    name: '6 Months',
+    priceBTC: 0.0005,
+    discount: '17% off',
+    description: 'Every 6 months',
+    popular: true,
+  },
+  {
+    id: 'annual',
+    name: 'Annual',
+    priceBTC: 0.0009,
+    discount: '25% off',
+    description: 'Billed yearly',
+  },
+];
 
-  const PLANS: Record<BillingPlan, PlanDetails> = {
-    monthly: {
-      id: 'monthly',
-      name: 'Monthly',
-      priceBTC: 0.0001,
-      description: 'Billed every month',
-    },
-    semiannual: {
-      id: 'semiannual',
-      name: '6 Months',
-      priceBTC: 0.0005,
-      discount: '17% off',
-      description: 'Billed every 6 months',
-    },
-    annual: {
-      id: 'annual',
-      name: 'Annual',
-      priceBTC: 0.0009,
-      discount: '25% off',
-      description: 'Billed yearly',
-    },
-  };
+function PaymentCard({ user_id, setModel }: { user_id?: string; setModel: (flag: boolean) => void }) {
+  const [selectedPlan, setSelectedPlan] = React.useState<BillingPlan>('semiannual');
+  const [open, setOpen] = React.useState(false);
+  const [isProcessing, setIsProcessing] = React.useState('');
+  const router = useRouter();
 
   const handleError = (error: any) => {
     if (error?.error?.message) toast.error(error.error.message);
@@ -73,17 +72,22 @@ export default function PaymentCard({
     setIsProcessing('');
   };
 
-  const processPayment = async (walletType: string) => {
+  const processPayment = async (walletType: string, planId: BillingPlan) => {
     if (!user_id) {
       setIsProcessing('');
       return false;
     }
 
-    const selectedPlanDetails = PLANS[selectedPlan];
+    const selectedPlanDetails = PLANS.find(plan => plan.id === planId);
+    if (!selectedPlanDetails) {
+      toast.error('Invalid plan selected');
+      return false;
+    }
+
     const amountSats = selectedPlanDetails.priceBTC * 10 ** 8;
 
     try {
-      let txid: string | undefined;
+      let txid: string | undefined = 'complete';
 
       switch (walletType) {
         case 'unisat':
@@ -165,7 +169,7 @@ export default function PaymentCard({
               senderAddress,
             },
             onFinish: () => {
-              txid = 'completed'; // Magic Eden doesn't return txid immediately
+              txid = 'completed';
             },
             onCancel: () => {
               throw new Error('Payment canceled');
@@ -178,20 +182,21 @@ export default function PaymentCard({
       }
 
       if (txid) {
-        // Update user subscription in database
         const response = await fetch('/api/subscriptions', {
-          method: 'POST',
+          method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             userId: user_id,
-            plan: selectedPlan,
+            plan: planId,
             transactionId: txid,
             amount: selectedPlanDetails.priceBTC,
           }),
         });
 
+        const data = await response.json();
+
         if (!response.ok) {
-          throw new Error('Failed to update subscription');
+          throw new Error(data.error || 'Failed to update subscription');
         }
 
         return true;
@@ -207,11 +212,11 @@ export default function PaymentCard({
   const handlePayment = async (walletType: string) => {
     setIsProcessing(walletType);
     try {
-      const success = await processPayment(walletType);
+      const success = await processPayment(walletType, selectedPlan);
       if (success) {
         setModel(false);
         toast.success('Payment successful!');
-        router.refresh();
+        window.location.reload();
       }
     } finally {
       setIsProcessing('');
@@ -219,80 +224,106 @@ export default function PaymentCard({
   };
 
   return (
-    <div className="absolute left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-black/10 p-2 backdrop-blur-lg">
-      <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
-        <div className="space-y-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-2">
+      <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+        <div className="space-y-2">
           <div className="text-center">
-            <h2 className="text-2xl font-bold">Subscription Plans</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Choose a plan that works best for you
+            <h2 className="text-2xl font-bold text-gray-900">Choose Your Plan</h2>
+            <p className="mt-2 text-sm text-gray-500">
+              Select the billing cycle that works best for you
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
-            {Object.values(PLANS).map((plan) => (
+          <div className="grid gap-2">
+            {PLANS.map((plan) => (
               <div
                 key={plan.id}
                 onClick={() => setSelectedPlan(plan.id)}
-                className={`cursor-pointer rounded-lg border p-4 transition-all ${selectedPlan === plan.id
-                  ? 'border-teal-500 bg-teal-50'
+                className={`relative cursor-pointer rounded-lg border p-3 transition-all ${selectedPlan === plan.id
+                  ? 'border-teal-500 bg-teal-50 ring-1 ring-teal-200'
                   : 'border-gray-200 hover:border-gray-300'
-                  }`}
+                  } ${plan.popular ? 'border-teal-300' : ''}`}
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="font-medium">{plan.name}</h3>
-                  {plan.discount && (
-                    <span className="rounded-full bg-teal-100 px-2 py-1 text-xs text-teal-800">
-                      {plan.discount}
-                    </span>
-                  )}
+                  <div>
+                    <h3 className="font-medium text-gray-900">{plan.name}</h3>
+                    <p className="text-sm text-gray-500">{plan.description}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-gray-900">{plan.priceBTC} BTC</p>
+                    {plan.discount && (
+                      <p className="text-xs text-teal-600">{plan.discount}</p>
+                    )}
+                  </div>
                 </div>
-                <p className="mt-2 text-2xl font-bold">{plan.priceBTC} BTC</p>
-                <p className="mt-1 text-xs text-gray-500">{plan.description}</p>
               </div>
             ))}
           </div>
 
-          <div className="space-y-3">
-            <h3 className="text-sm font-medium">Pay with Bitcoin Wallet</h3>
-            {['unisat', 'xverse', 'magiceden', 'okx', 'leather'].map((wallet) => (
-              <button
-                key={wallet}
-                onClick={() => handlePayment(wallet)}
-                disabled={!!isProcessing}
-                className="flex w-full items-center gap-3 rounded-lg bg-gray-100 p-3 transition-colors hover:bg-gray-200 disabled:opacity-70"
-              >
-                <Image
-                  src={`/wallet/${wallet}.${wallet === 'okx' ? 'png' : 'jpg'}`}
-                  alt={wallet}
-                  width={32}
-                  height={32}
-                  className="h-8 w-8 rounded-lg border border-gray-300"
+          <Collapsible open={open} onOpenChange={setOpen} className="space-y-3">
+            <CollapsibleTrigger asChild>
+              <button className="flex w-full items-center justify-between rounded-lg bg-gray-100 p-4 transition-colors hover:bg-gray-200">
+                <div className="flex items-center gap-3">
+                  <span className="font-medium text-gray-900">Payment Methods</span>
+                </div>
+                <ChevronDownIcon
+                  className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${open ? 'rotate-180' : ''
+                    }`}
                 />
-                <span className="capitalize">
-                  {wallet === 'magiceden' ? 'Magic Eden' : wallet}
-                </span>
-                {isProcessing === wallet && (
-                  <span className="ml-auto text-xs text-gray-500">Processing...</span>
-                )}
               </button>
-            ))}
-          </div>
+            </CollapsibleTrigger>
 
-          <div className="rounded-lg border border-teal-100 bg-teal-50 p-4">
-            <div className="flex items-center justify-between">
-              <span className="font-medium">Total</span>
-              <span className="text-lg font-bold">
-                {PLANS[selectedPlan].priceBTC} BTC
-              </span>
+            <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+              <div className="space-y-1 pt-2">
+                {['unisat', 'xverse', 'magiceden', 'okx', 'leather'].map((wallet) => (
+                  <button
+                    key={wallet}
+                    onClick={() => handlePayment(wallet)}
+                    disabled={!!isProcessing}
+                    className={`flex w-full items-center gap-3 rounded-lg p-2 transition-colors border border-gray-200 ${isProcessing === wallet
+                      ? 'bg-gray-100'
+                      : 'bg-gray-50 hover:bg-gray-100'
+                      }`}
+                  >
+                    <Image
+                      src={`/wallet/${wallet}.jpg`}
+                      alt={wallet}
+                      width={32}
+                      height={32}
+                      className="h-8 w-8 rounded-lg border border-gray-200 object-cover"
+                    />
+                    <span className="capitalize text-gray-800">
+                      {wallet === 'magiceden' ? 'Magic Eden' : wallet}
+                    </span>
+                    {isProcessing === wallet && (
+                      <span className="ml-auto text-xs text-gray-500">Processing...</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+
+          <div className="rounded-lg">
+            <div className="flex items-center justify-between p-4 bg-gray-50">
+              <div>
+                <p className="font-medium text-gray-900">Order Summary</p>
+                <p className="text-sm text-gray-500">
+                  {PLANS.find(p => p.id === selectedPlan)?.name} Plan
+                </p>
+              </div>
+              <p className="text-lg font-semibold text-gray-900">
+                {PLANS.find(p => p.id === selectedPlan)?.priceBTC} BTC
+              </p>
             </div>
-            <p className="mt-2 text-xs text-gray-600">
-              Funds support LLM integration, RPC services, and platform maintenance
-              to ensure reliability and performance.
-            </p>
+            <div className="mt-4 text-xs text-gray-500 text-center mt-2">
+              By completing your purchase, you agree to our Terms of Service and Privacy Policy.
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+export default PaymentCard;

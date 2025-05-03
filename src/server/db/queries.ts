@@ -331,3 +331,49 @@ export async function dbUpdateEarlyAccess({ userId }: { userId: string }) {
     return null;
   }
 }
+
+/**
+ * Update user subscription
+ * @param params - Subscription parameters
+ * @returns Updated user record
+ */
+export async function dbUpdateSubscription({
+  userId,
+  plan,
+}: {
+  userId: string;
+  plan: 'monthly' | 'semiannual' | 'annual';
+}) {
+  try {
+    const expirationDate = new Date();
+    switch (plan) {
+      case 'monthly':
+        expirationDate.setMonth(expirationDate.getMonth() + 1);
+        break;
+      case 'semiannual':
+        expirationDate.setMonth(expirationDate.getMonth() + 6);
+        break;
+      case 'annual':
+        expirationDate.setFullYear(expirationDate.getFullYear() + 1);
+        break;
+    }
+
+    return await prisma.user.update({
+      where: { id: userId },
+      data: {
+        subscriptionPlan: plan,
+        subscriptionExpiry: expirationDate,
+        freeMessagesRemaining: 0,
+      },
+      select: {
+        id: true,
+        subscriptionPlan: true,
+        subscriptionExpiry: true,
+        earlyAccess: true,
+      },
+    });
+  } catch (error) {
+    console.error('[DB Error] Failed to update subscription:', error);
+    throw new Error('Failed to update subscription');
+  }
+}

@@ -3,7 +3,6 @@ import { ChevronDownIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import { toast } from "sonner";
 import { CollapsibleContent, CollapsibleTrigger, Collapsible } from "@radix-ui/react-collapsible";
-import { useRouter } from "next/navigation";
 import {
   AddressPurpose,
   BitcoinNetworkType,

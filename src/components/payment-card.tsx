@@ -9,7 +9,6 @@ import {
   sendBtcTransaction,
 } from 'sats-connect';
 import { toast } from 'sonner';
-import { Badge } from './ui/badge';
 
 declare global {
   interface Window {

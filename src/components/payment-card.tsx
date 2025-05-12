@@ -108,7 +108,7 @@ function PaymentCard({ user_id, setModel }: { user_id?: string; setModel: (flag:
           if (xverseResponse.status !== 'success') {
             throw new Error(xverseResponse.error?.message || 'Payment failed');
           }
-          txid = xverseResponse.txid;
+          txid = xverseResponse.result.txid;
           break;
 
         case 'leather':
@@ -123,7 +123,7 @@ function PaymentCard({ user_id, setModel }: { user_id?: string; setModel: (flag:
           if (leatherResponse.status !== 'success') {
             throw new Error(leatherResponse.error?.message || 'Payment failed');
           }
-          txid = leatherResponse.txid;
+          txid = leatherResponse.result.txid;
           break;
 
         case 'okx':

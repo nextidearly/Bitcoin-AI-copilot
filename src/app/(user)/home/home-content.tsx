@@ -67,23 +67,26 @@ export function HomeContent() {
 
     const fakeEvent = new Event('submit') as any;
     fakeEvent.preventDefault = () => { };
-
-
-    if (user.freeMessagesRemaining > 0) {
-      await handleSubmit(fakeEvent, { data: { content: value } });
-      user.freeMessagesRemaining -= 1;
+    await handleSubmit(fakeEvent, { data: { content: value } });
 
       setShowChat(true);
       window.history.replaceState(null, '', `/chat/${chatId}`);
-    } else if (user.subscriptionPlan && user.subscriptionExpiry && user.subscriptionExpiry >= new Date()) {
-      await handleSubmit(fakeEvent, { data: { content: value } });
 
-      setShowChat(true);
-      window.history.replaceState(null, '', `/chat/${chatId}`);
-    } else {
-      setShowPayment(true);
-      return;
-    }
+    // if (user.freeMessagesRemaining > 0) {
+    //   await handleSubmit(fakeEvent, { data: { content: value } });
+    //   user.freeMessagesRemaining -= 1;
+
+    //   setShowChat(true);
+    //   window.history.replaceState(null, '', `/chat/${chatId}`);
+    // } else if (user.subscriptionPlan && user.subscriptionExpiry && user.subscriptionExpiry >= new Date()) {
+    //   await handleSubmit(fakeEvent, { data: { content: value } });
+
+    //   setShowChat(true);
+    //   window.history.replaceState(null, '', `/chat/${chatId}`);
+    // } else {
+    //   setShowPayment(true);
+    //   return;
+    // }
   };
 
   // Reset chat when pathname changes to /home

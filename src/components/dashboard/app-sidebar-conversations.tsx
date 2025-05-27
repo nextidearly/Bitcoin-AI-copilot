@@ -12,6 +12,7 @@ import {
   Loader2,
   MoreHorizontal,
   PencilIcon,
+  Trash2Icon,
   TrashIcon,
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -153,8 +154,8 @@ const ConversationMenuItem = ({
               <PencilIcon className="h-4 w-4" />
               <span>Rename</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleDelete}>
-              <TrashIcon className="h-4 w-4" />
+            <DropdownMenuItem className='text-red-400' onClick={handleDelete}>
+              <Trash2Icon className="h-4 w-4" />
               <span>Delete</span>
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -20,14 +20,14 @@ import {
 
 import { AppSidebarConversations } from './app-sidebar-conversations';
 import { AppSidebarUser } from './app-sidebar-user';
+import Logo from '../logo';
 
 const AppSidebarHeader = () => {
   return (
     <SidebarHeader>
       <div className="flex items-center justify-between px-1">
-        <span className="pl-2 text-lg font-medium tracking-tight group-data-[collapsible=icon]:hidden">
-          BITX
-        </span>
+        <Logo width={28} height={28} className='rounded-md' />
+
         <div className="flex items-center gap-1.5">
           <ThemeToggle />
         </div>

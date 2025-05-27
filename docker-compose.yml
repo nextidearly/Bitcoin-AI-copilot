@@ -1,58 +1,58 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  halo-app:
+  neur-app:
     build:
       context: .
       dockerfile: Dockerfile.local
       target: dev
-    container_name: 'halo-app'
+    container_name: "neur-app"
     depends_on:
-      halo-db:
+      neur-db:
         condition: service_healthy
     expose:
-      - '3000'
+      - "3000"
     ports:
-      - '3000:3000'
+      - "3000:3000"
     working_dir: /usr/src/app
-    command: '/bin/bash ./local_entrypoint.sh'
+    command: "/bin/bash ./local_entrypoint.sh"
     env_file:
       - .env
     environment:
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@halo-db:5432/halodb
-      - DIRECT_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@halo-db:5432/halodb
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@neur-db:5432/neurdb
+      - DIRECT_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@neur-db:5432/neurdb
     volumes:
       - .:/usr/src/app
       - root_node_modules:/usr/src/app/node_modules
       - webapp_next:/usr/src/app/.next
 
-  halo-studio:
+  neur-studio:
     build:
       context: .
       dockerfile: Dockerfile.local
       target: dev
-    container_name: 'halo-studio'
+    container_name: "neur-studio"
     depends_on:
-      halo-db:
+      neur-db:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@halo-db:5432/halodb
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@neur-db:5432/neurdb
     expose:
-      - '5555'
+      - "5555"
     ports:
-      - '5555:5555'
+      - "5555:5555"
     working_dir: /usr/src/app
-    command: 'pnpm npx prisma studio'
+    command: "pnpm npx prisma studio"
     volumes:
       - .:/usr/src/app
       - root_node_modules:/usr/src/app/node_modules
       - webapp_next:/usr/src/app/.next
 
-  halo-db:
-    image: 'postgres:15'
-    container_name: 'halo-db'
+  neur-db:
+    image: "postgres:15"
+    container_name: "neur-db"
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -60,11 +60,11 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
-      - 'halo-db-data:/var/lib/postgresql/data'
+      - "neur-db-data:/var/lib/postgresql/data"
 
 volumes:
-  halo-db-data:
+  neur-db-data:
   root_node_modules:
   webapp_next:

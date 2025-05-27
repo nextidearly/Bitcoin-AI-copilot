@@ -35,13 +35,12 @@ export default function MaintenanceIndex() {
         <p className="text-lg">
           Follow{' '}
           <Link
-            href="https://x.com/halo_sh"
+            href="https://google.com"
             target="_blank"
             className="text-blue-500 hover:text-blue-600"
           >
-            @halo_sh
-          </Link>{' '}
-          for updates on our launch
+            us
+          </Link>
         </p>
       </div>
     </div>

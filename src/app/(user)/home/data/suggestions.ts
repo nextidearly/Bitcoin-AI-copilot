@@ -1,81 +1,68 @@
-import { ComponentType } from 'react';
-
-import {
-  ActivityIcon,
-  BanknoteIcon,
-  Bitcoin,
-  LineChart,
-  List,
-  Nfc,
-} from 'lucide-react';
-
 export interface Suggestion {
   id: string;
   title: string;
   subtitle: string;
-  icon: ComponentType<{ size?: number; className?: string }>;
 }
 
-export const SUGGESTIONS = [
+export const SUGGESTIONS: Suggestion[] = [
   {
-    id: 'btc-price',
-    title: "What's Bitcoin's price?",
-    subtitle: 'get the latest BTC/USD rate',
-    icon: Bitcoin,
+    id: 'launch-token',
+    title: 'Launch a new token',
+    subtitle: 'deploy a new token on pump.fun',
   },
   {
-    id: 'trending-collections',
-    title: 'Trending collections today',
-    subtitle: 'get list trending collections',
-    icon: Nfc,
+    id: 'swap-sol-usdc',
+    title: 'Swap 1 SOL for USDC',
+    subtitle: 'using Jupiter to swap on Solana',
   },
   {
-    id: 'trending-runes',
-    title: 'Trending runes this week',
-    subtitle: 'get list trending runes this week',
-    icon: BanknoteIcon,
+    id: 'solana-trends',
+    title: "What's trending on Solana?",
+    subtitle: 'find the current market trends',
   },
   {
-    id: 'wallet-portfolio',
-    title: 'Show wallet balance of [address]',
-    subtitle:
-      'get wallet balance including btc, utxos, inscriptions, brc20 and runes',
-    icon: LineChart,
+    id: 'price-feed',
+    title: "What's the price of SOL?",
+    subtitle: 'find the current price of SOL',
   },
   {
-    id: 'check-collection-activity',
-    title: 'Recent activities of [collection symbol]',
-    subtitle: 'get list the recent activites for a collection',
-    icon: ActivityIcon,
+    id: 'top-gainers-last-24h',
+    title: 'Top gainers in the last 24h',
+    subtitle: 'find the top gainers in the last 24 hours',
   },
   {
-    id: 'check-rune-activity',
-    title: 'Recent activities of [rune name]',
-    subtitle: 'get list the recent activites for a rune',
-    icon: ActivityIcon,
+    id: 'check-my-wallet',
+    title: 'Check my wallet',
+    subtitle: 'check the portfolio of your wallet',
   },
-  {
-    id: 'check-collection-statistic',
-    title: 'Statistic data of [collection symbol]',
-    subtitle: 'get the statistic data for a collection',
-    icon: List,
-  },
-  {
-    id: 'check-rune-statistic',
-    title: 'Statistic data of [rune name]',
-    subtitle: 'get the statistic data for a rune',
-    icon: List,
-  },
+  // {
+  //   id: 'sell-everything-buy-neur',
+  //   title: 'Sell everything and buy $NEUR',
+  //   subtitle: 'swap all your tokens for $NEUR',
+  // },
+  // {
+  //   id: 'phantom-updates',
+  //   title: 'Any updates from @phantom recently?',
+  //   subtitle: 'summarize the latest tweets from @phantom',
+  // },
+  // {
+  //     id: "toly-updates",
+  //     title: "What has toly been doing recently?",
+  //     subtitle: "summarize his recent tweets"
+  // },
 ];
 
 export function getRandomSuggestions(count: number): Suggestion[] {
+  // Ensure we don't request more items than available
   const safeCount = Math.min(count, SUGGESTIONS.length);
   const startIndex = Math.floor(Date.now() / 1000) % SUGGESTIONS.length;
 
+  // Create a rotated copy of the array starting from startIndex
   const rotatedSuggestions = [
     ...SUGGESTIONS.slice(startIndex),
     ...SUGGESTIONS.slice(0, startIndex),
   ];
 
+  // Return only the first safeCount items
   return rotatedSuggestions.slice(0, safeCount);
 }

@@ -34,8 +34,8 @@ export function IntegrationCard({
         transition: { duration: 0.1 },
       }}
       onClick={onClick}
-      className="group relative flex w-full items-center gap-3 overflow-hidden rounded-md bg-muted p-4 shadow 
-        shadow-black/40 transition-all duration-200"
+      className="group relative flex w-full items-center gap-3 overflow-hidden rounded-xl bg-muted 
+        p-4 transition-all duration-200"
       style={
         {
           '--integration-primary': item.theme.primary,
@@ -57,8 +57,8 @@ export function IntegrationCard({
         <Image
           src={item.icon}
           alt={item.label}
-          width={28}
-          height={28}
+          width={24}
+          height={24}
           className="z-10 transition-transform duration-300 group-hover:scale-105"
         />
       </motion.div>

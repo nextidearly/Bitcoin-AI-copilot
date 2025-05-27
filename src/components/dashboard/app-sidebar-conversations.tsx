@@ -6,10 +6,22 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
 import { Conversation } from '@prisma/client';
-import { Loader2, PencilIcon, TrashIcon, WandSparkles } from 'lucide-react';
+import {
+  Bell,
+  ChevronDown,
+  Loader2,
+  MoreHorizontal,
+  PencilIcon,
+  TrashIcon,
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import {
   Dialog,
   DialogContent,
@@ -29,7 +41,11 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useConversations } from '@/hooks/use-conversations';
+import usePolling from '@/hooks/use-polling';
 import { useUser } from '@/hooks/use-user';
+import { EVENTS } from '@/lib/events';
+import { cn } from '@/lib/utils';
+import { markConversationAsRead } from '@/server/actions/conversation';
 
 import {
   SidebarGroup,
@@ -37,6 +53,7 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
 } from '../ui/sidebar';
+import { Tooltip, TooltipTrigger } from '../ui/tooltip';
 
 interface ConversationMenuItemProps {
   id: string;
@@ -44,6 +61,9 @@ interface ConversationMenuItemProps {
   active?: boolean;
   onDelete: (id: string) => Promise<void>;
   onRename: (id: string, newTitle: string) => Promise<void>;
+  lastMessageAt: Date | null;
+  lastReadAt: Date | null;
+  onMarkAsRead: (id: string) => void;
 }
 
 const ConversationMenuItem = ({
@@ -52,6 +72,9 @@ const ConversationMenuItem = ({
   active,
   onDelete,
   onRename,
+  lastMessageAt,
+  lastReadAt,
+  onMarkAsRead,
 }: ConversationMenuItemProps) => {
   const router = useRouter();
   const [isRenaming, setIsRenaming] = useState(false);
@@ -91,27 +114,38 @@ const ConversationMenuItem = ({
       toast.success('Conversation deleted');
 
       // Navigate and refresh after successful deletion
-      router.replace('/');
+      router.replace('/home');
       router.refresh();
+
+      // Emit the event to refresh actions
+      window.dispatchEvent(new CustomEvent(EVENTS.ACTION_REFRESH));
     } catch (error) {
       console.error('Error deleting conversation:', error);
       toast.error('Failed to delete conversation');
     }
   };
 
+  const hasUnread = lastMessageAt && lastReadAt && lastMessageAt > lastReadAt;
+
   return (
-    <div className="relative">
+    <>
       <SidebarMenuItem>
         <SidebarMenuButton asChild isActive={active}>
-          <Link href={`/chat/${id}`}>
+          <Link href={`/chat/${id}`} onClick={() => onMarkAsRead(id)}>
+            {hasUnread && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Bell className="h-4 w-4 shrink-0 text-pending" />
+                </TooltipTrigger>
+              </Tooltip>
+            )}
             <span>{title}</span>
           </Link>
         </SidebarMenuButton>
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuAction>
-              <WandSparkles className="h-4 w-4" />
+              <MoreHorizontal className="h-4 w-4" />
             </SidebarMenuAction>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="right" align="start">
@@ -160,7 +194,7 @@ const ConversationMenuItem = ({
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 };
 
@@ -175,20 +209,57 @@ export const AppSidebarConversations = () => {
     renameConversation,
     setActiveId,
     refreshConversations,
+    markAsRead,
   } = useConversations(user?.id);
+
+  // Add state for collapsible
+  const [isOpen, setIsOpen] = useState(true);
 
   // Handle active conversation and refresh if needed
   useEffect(() => {
     const chatId = pathname.startsWith('/chat/')
       ? pathname.split('/')[2]
       : null;
+
     setActiveId(chatId);
+
+    const handleConversationRead = async () => {
+      if (chatId) {
+        handleMarkAsRead(chatId);
+      }
+    };
+
+    window.addEventListener(EVENTS.CONVERSATION_READ, handleConversationRead);
+
+    return () => {
+      // Cleanup event listener on unmount or dependency change
+      window.removeEventListener(
+        EVENTS.CONVERSATION_READ,
+        handleConversationRead,
+      );
+    };
   }, [pathname, setActiveId, conversations, refreshConversations]);
 
-  if (user && isUserLoading) {
+  const handleMarkAsRead = (id: string) => {
+    // Update conversation in local store
+    markAsRead(id);
+
+    // Emit event to update conversation read status
+    markConversationAsRead({ id });
+  };
+
+  // Use polling for refreshing conversations
+  usePolling({
+    url: null,
+    onUpdate: () => {
+      refreshConversations();
+    },
+  });
+
+  if (isUserLoading) {
     return (
       <SidebarGroup>
-        <SidebarGroupLabel>Histories</SidebarGroupLabel>
+        <SidebarGroupLabel>Conversations</SidebarGroupLabel>
         <div className="flex items-center justify-center">
           <Loader2 className="mt-4 h-4 w-4 animate-spin" />
         </div>
@@ -198,31 +269,50 @@ export const AppSidebarConversations = () => {
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Histories</SidebarGroupLabel>
-      <SidebarGroupContent>
-        {user && isConversationsLoading ? (
-          <div className="flex items-center justify-center">
-            <Loader2 className="mt-4 h-4 w-4 animate-spin" />
-          </div>
-        ) : !user || !conversations?.length ? (
-          <p className="ml-2 text-xs text-muted-foreground">
-            {!user ? 'Not authenticated' : 'No conversations'}
-          </p>
-        ) : (
-          <SidebarMenu>
-            {conversations.map((conversation: Conversation) => (
-              <ConversationMenuItem
-                key={conversation.id}
-                id={conversation.id}
-                title={conversation.title}
-                active={conversation.id === activeId}
-                onDelete={deleteConversation}
-                onRename={renameConversation}
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <div className="flex items-center justify-between pr-2">
+          <SidebarGroupLabel>Conversations</SidebarGroupLabel>
+          <CollapsibleTrigger asChild>
+            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+              <ChevronDown
+                className={cn(
+                  'h-4 w-4 transition-transform duration-200',
+                  isOpen ? '' : '-rotate-90',
+                )}
               />
-            ))}
-          </SidebarMenu>
-        )}
-      </SidebarGroupContent>
+            </Button>
+          </CollapsibleTrigger>
+        </div>
+        <CollapsibleContent className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+          <SidebarGroupContent className="group-data-[collapsible=icon]:hidden">
+            {isConversationsLoading ? (
+              <div className="flex items-center justify-center">
+                <Loader2 className="mt-4 h-4 w-4 animate-spin" />
+              </div>
+            ) : !conversations?.length ? (
+              <p className="ml-2 text-xs text-muted-foreground">
+                No conversations
+              </p>
+            ) : (
+              <SidebarMenu>
+                {conversations.map((conversation: Conversation) => (
+                  <ConversationMenuItem
+                    key={conversation.id}
+                    id={conversation.id}
+                    title={conversation.title}
+                    active={conversation.id === activeId}
+                    onDelete={deleteConversation}
+                    onRename={renameConversation}
+                    lastMessageAt={conversation.lastMessageAt}
+                    lastReadAt={conversation.lastReadAt}
+                    onMarkAsRead={handleMarkAsRead}
+                  />
+                ))}
+              </SidebarMenu>
+            )}
+          </SidebarGroupContent>
+        </CollapsibleContent>
+      </Collapsible>
     </SidebarGroup>
   );
 };

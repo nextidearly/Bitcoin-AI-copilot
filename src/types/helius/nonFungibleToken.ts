@@ -100,7 +100,6 @@ export interface Compression {
   seq: number;
   leaf_id: number;
 }
-
 export interface Royalty {
   royalty_model: string;
   target: string | null;
@@ -109,7 +108,6 @@ export interface Royalty {
   primary_sale_happened: boolean;
   locked: boolean;
 }
-
 export interface Ownership {
   frozen: boolean;
   delegated: boolean;

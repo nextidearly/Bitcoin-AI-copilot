@@ -10,6 +10,7 @@ export function IntegrationsGrid() {
           item={item}
           index={index}
           onClick={() => {
+            // TODO: Implement integration click handler
             console.log(`Clicked ${item.label}`);
           }}
         />

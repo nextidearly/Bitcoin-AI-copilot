@@ -23,17 +23,17 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Halo',
-    default: 'Halo - The Intelligent Copilot for Bitcoin',
+    template: '%s | Neur',
+    default: 'Neur - The Intelligent Copilot for Solana',
   },
-  description: 'The Intelligent Copilot elevating your Bitcoin experience.',
+  description: 'The Intelligent Copilot elevating your Solana experience.',
 
   icons: {
     icon: '/logo.svg',
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -47,11 +47,11 @@ export default async function RootLayout({
         <AuthProviders>
           <ThemeProvider
             attribute="class"
-            defaultTheme="light"
+            defaultTheme="system"
             enableSystem
             disableTransitionOnChange
           >
-            <main className="overflow-hidden ">
+            <main className="sticky bottom-0 overflow-hidden md:overflow-visible">
               {children}
               <Toaster />
             </main>

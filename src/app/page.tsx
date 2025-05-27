@@ -1,41 +1,60 @@
 'use client';
 
-import Link from 'next/link';
+import { useRef } from 'react';
 
-import { User } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
-import { AppSidebar } from '@/components/dashboard/app-sidebar';
-import Hello from '@/components/hello';
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import { useUser } from '@/hooks/use-user';
+import { useLogin } from '@privy-io/react-auth';
 
-import { HomeContent } from './(user)/home/home-content';
+import { Button } from '@/components/ui/button';
 
-export default function HomePage() {
-  const { user } = useUser();
+const Hero = ({ handleLogin }: { handleLogin: () => void }) => {
+  const productRef = useRef<HTMLDivElement>(null);
 
   return (
-    <SidebarProvider defaultOpen={false}>
-      <Hello />
+    <section className="relative pt-[5.75rem]" ref={productRef}>
+      <div className="relative mx-auto max-w-screen-xl px-6 pb-6 pt-12 text-center md:pb-8 md:pt-16">
+        <div className="mx-auto max-w-3xl">
+          <div className="mt-8">
+            <Button
+              onClick={handleLogin}
+              className="h-12 min-w-[180px] text-base transition-all duration-300 hover:scale-105"
+            >
+              Getting Started
+            </Button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
 
-      {user && (
-        <>
-          <SidebarTrigger className="absolute z-50 mb-0 rounded-full bg-[#611a4d29] duration-500 hover:bg-gray-700/90 hover:text-white" />
+export default function Home() {
+  const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true';
+  const router = useRouter();
+  let { login } = useLogin({
+    onComplete: async (
+      user,
+      isNewUser,
+      wasAlreadyAuthenticated,
+      loginMethod,
+      loginAccount,
+    ) => {
+      router.push('/home');
+    },
+  });
 
-          <AppSidebar />
-          <Link
-            href={'/account'}
-            className={`absolute right-3 top-3 z-50 mb-0 rounded-full bg-[#db9cc9] p-2 duration-500 hover:bg-gray-700/90 hover:text-white sm:bg-[#611a4d29]`}
-          >
-            <User />
-          </Link>
-        </>
-      )}
+  if (isMaintenanceMode) {
+    login = () => {
+      window.location.href = 'https://x.com/nextidearly';
+    };
+  }
 
-      <main className="w-full">
-        <HomeContent />
+  return (
+    <div className="flex flex-col">
+      <main className="flex-1">
+        <Hero handleLogin={login} />
       </main>
-    </SidebarProvider>
+    </div>
   );
 }

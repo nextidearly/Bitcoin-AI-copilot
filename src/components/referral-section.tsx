@@ -80,7 +80,7 @@ export function ReferralSection({
               <div className="flex items-center gap-2">
                 <Input
                   readOnly
-                  value={`https://neur.studio/?ref=${referralCode}`}
+                  value={`https://halo.studio/?ref=${referralCode}`}
                   className="flex-1 bg-background/50 font-mono text-sm"
                 />
                 <Button
@@ -88,7 +88,7 @@ export function ReferralSection({
                   size="sm"
                   className="min-w-[100px] text-xs"
                   onClick={() => {
-                    copyToClipboard(`https://neur.studio/?ref=${referralCode}`);
+                    copyToClipboard(`https://halo.studio/?ref=${referralCode}`);
                     setCopied(true);
                     setTimeout(() => setCopied(false), 2000);
                   }}

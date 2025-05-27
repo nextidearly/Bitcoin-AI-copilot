@@ -34,22 +34,7 @@ export const SUGGESTIONS: Suggestion[] = [
     id: 'check-my-wallet',
     title: 'Check my wallet',
     subtitle: 'check the portfolio of your wallet',
-  },
-  // {
-  //   id: 'sell-everything-buy-neur',
-  //   title: 'Sell everything and buy $NEUR',
-  //   subtitle: 'swap all your tokens for $NEUR',
-  // },
-  // {
-  //   id: 'phantom-updates',
-  //   title: 'Any updates from @phantom recently?',
-  //   subtitle: 'summarize the latest tweets from @phantom',
-  // },
-  // {
-  //     id: "toly-updates",
-  //     title: "What has toly been doing recently?",
-  //     subtitle: "summarize his recent tweets"
-  // },
+  }
 ];
 
 export function getRandomSuggestions(count: number): Suggestion[] {

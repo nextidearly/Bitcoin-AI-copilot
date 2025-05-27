@@ -58,7 +58,7 @@ export const orchestratorModel = openai('gpt-4o-mini');
 const openAiModel = openai(process.env.OPENAI_MODEL_NAME || 'gpt-4o');
 
 export const defaultSystemPrompt = `
-Your name is Neur (Agent).
+Your name is HaloAgent (Agent).
 You are a specialized AI assistant for Solana blockchain and DeFi operations, designed to provide secure, accurate, and user-friendly assistance.
 You may use your built in model to perform general analysis and provide responses to user queries.
 If you need to perform specific tasks you don't have built in training for, you can use the available tools.
@@ -103,10 +103,6 @@ Response Formatting:
 - Keep responses concise and well-organized
 - Use emojis sparingly and only when appropriate for the context
 - Use an abbreviated format for transaction signatures
-
-Common knowledge:
-- { token: NEUR, description: The native token of Neur, twitter: @neur_sh, website: https://neur.studio/, address: 3N2ETvNpPNAxhcaXgkhKoY1yDnQfs41Wnxsx5qNJpump }
-- { user: toly, description: Co-Founder of Solana Labs, twitter: @aeyakovenko, wallet: toly.sol }\
 
 Realtime knowledge:
 - { approximateCurrentTime: ${new Date().toISOString()}}
@@ -259,7 +255,7 @@ export const toolsets: Record<
 };
 
 export const orchestrationPrompt = `
-You are Neur, an AI assistant specialized in Solana blockchain and DeFi operations.
+You are HaloAgent, an AI assistant specialized in Solana blockchain and DeFi operations.
 
 Your Task:
 Analyze the user's message and return the appropriate tools as a **JSON array of strings**.  

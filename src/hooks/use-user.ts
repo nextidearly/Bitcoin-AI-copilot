@@ -9,24 +9,24 @@ import useSWR from 'swr';
 
 import { debugLog } from '@/lib/debug';
 import { getUserData } from '@/server/actions/user';
-import { NeurUser, PrismaUser, PrivyUser } from '@/types/db';
+import { HaloAgentUser, PrismaUser, PrivyUser } from '@/types/db';
 
 /**
- * Extended interface for NeurUser that includes Privy functionality
+ * Extended interface for HaloAgentUser that includes Privy functionality
  * Omits 'user' and 'ready' from PrivyInterface to avoid conflicts
  */
-type NeurUserInterface = Omit<PrivyInterface, 'user' | 'ready'> & {
+type HaloAgentUserInterface = Omit<PrivyInterface, 'user' | 'ready'> & {
   isLoading: boolean;
-  user: NeurUser | null;
+  user: HaloAgentUser | null;
 };
 
 /**
- * Loads cached NeurUser data from localStorage
- * @returns {NeurUser | null} Cached user data or null if not found/invalid
+ * Loads cached HaloAgentUser data from localStorage
+ * @returns {HaloAgentUser | null} Cached user data or null if not found/invalid
  */
-function loadFromCache(): NeurUser | null {
+function loadFromCache(): HaloAgentUser | null {
   try {
-    const cached = localStorage.getItem('neur-user-data');
+    const cached = localStorage.getItem('halo-user-data');
     if (cached) {
       debugLog('Loading user data from cache', cached, {
         module: 'useUser',
@@ -49,19 +49,19 @@ function loadFromCache(): NeurUser | null {
 }
 
 /**
- * Saves NeurUser data to localStorage
- * @param {NeurUser | null} data User data to cache or null to clear cache
+ * Saves HaloAgentUser data to localStorage
+ * @param {HaloAgentUser | null} data User data to cache or null to clear cache
  */
-function saveToCache(data: NeurUser | null) {
+function saveToCache(data: HaloAgentUser | null) {
   try {
     if (data) {
-      localStorage.setItem('neur-user-data', JSON.stringify(data));
+      localStorage.setItem('halo-user-data', JSON.stringify(data));
       debugLog('User data saved to cache', data, {
         module: 'useUser',
         level: 'info',
       });
     } else {
-      localStorage.removeItem('neur-user-data');
+      localStorage.removeItem('halo-user-data');
       debugLog('User data removed from cache', null, {
         module: 'useUser',
         level: 'info',
@@ -76,13 +76,13 @@ function saveToCache(data: NeurUser | null) {
 }
 
 /**
- * Fetches NeurUser data from the server
+ * Fetches HaloAgentUser data from the server
  * @param {PrivyUser} privyUser The authenticated Privy user
- * @returns {Promise<NeurUser | null>} User data or null if fetch fails
+ * @returns {Promise<HaloAgentUser | null>} User data or null if fetch fails
  */
-async function fetchNeurUserData(
+async function fetchHaloAgentUserData(
   privyUser: PrivyUser,
-): Promise<NeurUser | null> {
+): Promise<HaloAgentUser | null> {
   try {
     const response = await getUserData();
     if (response?.data?.success && response?.data?.data) {
@@ -94,7 +94,7 @@ async function fetchNeurUserData(
       return {
         ...prismaUser,
         privyUser: privyUser as PrivyUser,
-      } as NeurUser;
+      } as HaloAgentUser;
     }
     debugLog(
       'Server returned unsuccessful user data response',
@@ -115,13 +115,13 @@ async function fetchNeurUserData(
 }
 
 /**
- * Custom hook for managing NeurUser data fetching, caching, and synchronization
+ * Custom hook for managing HaloAgentUser data fetching, caching, and synchronization
  * Combines Privy authentication with our user data management system
- * @returns {NeurUserInterface} Object containing user data, loading state, and Privy interface methods
+ * @returns {HaloAgentUserInterface} Object containing user data, loading state, and Privy interface methods
  */
-export function useUser(): NeurUserInterface {
+export function useUser(): HaloAgentUserInterface {
   const { ready, user: privyUser, ...privyRest } = usePrivy();
-  const [initialCachedUser, setInitialCachedUser] = useState<NeurUser | null>(
+  const [initialCachedUser, setInitialCachedUser] = useState<HaloAgentUser | null>(
     null,
   );
   const router = useRouter();
@@ -138,9 +138,9 @@ export function useUser(): NeurUserInterface {
 
   /**
    * SWR fetcher function that combines server data with Privy user data
-   * @returns {Promise<NeurUser | null>} Combined user data or null
+   * @returns {Promise<HaloAgentUser | null>} Combined user data or null
    */
-  const fetcher = useCallback(async (): Promise<NeurUser | null> => {
+  const fetcher = useCallback(async (): Promise<HaloAgentUser | null> => {
     if (!ready || !privyUser) {
       debugLog('Privy not ready or user not logged in', null, {
         module: 'useUser',
@@ -150,18 +150,18 @@ export function useUser(): NeurUserInterface {
     }
 
     if (privyUser) {
-      debugLog('Fetching NeurUser data from server', null, {
+      debugLog('Fetching HaloAgentUser data from server', null, {
         module: 'useUser',
         level: 'info',
       });
-      const neurUser = await fetchNeurUserData(privyUser as PrivyUser);
-      debugLog('Merged NeurUser data', neurUser, {
+      const haloUser = await fetchHaloAgentUserData(privyUser as PrivyUser);
+      debugLog('Merged HaloAgentUser data', haloUser, {
         module: 'useUser',
         level: 'info',
       });
-      return neurUser;
+      return haloUser;
     }
-    debugLog('No valid NeurUser data retrieved', null, {
+    debugLog('No valid HaloAgentUser data retrieved', null, {
       module: 'useUser',
       level: 'warn',
     });
@@ -169,7 +169,7 @@ export function useUser(): NeurUserInterface {
   }, [ready, privyUser]);
 
   // Use SWR for data fetching and state management
-  const { data: neurUser, isValidating: swrLoading } = useSWR<NeurUser | null>(
+  const { data: haloUser, isValidating: swrLoading } = useSWR<HaloAgentUser | null>(
     swrKey,
     fetcher,
     {
@@ -179,15 +179,15 @@ export function useUser(): NeurUserInterface {
     },
   );
 
-  debugLog('Current NeurUser data', neurUser, { module: 'useUser' });
+  debugLog('Current HaloAgentUser data', haloUser, { module: 'useUser' });
   debugLog('SWR validation status', swrLoading, { module: 'useUser' });
 
   // Update cache when new user data is fetched
   useEffect(() => {
-    if (neurUser) {
-      saveToCache(neurUser);
+    if (haloUser) {
+      saveToCache(haloUser);
     }
-  }, [neurUser]);
+  }, [haloUser]);
 
   const isLoading = swrLoading && !initialCachedUser;
   debugLog('Loading state', { isLoading }, { module: 'useUser' });
@@ -223,8 +223,8 @@ export function useUser(): NeurUserInterface {
 
   return {
     ...privyRest,
-    isLoading: isLoading || neurUser == null,
-    user: neurUser || null,
+    isLoading: isLoading || haloUser == null,
+    user: haloUser || null,
     logout: extendedLogout,
   };
 }

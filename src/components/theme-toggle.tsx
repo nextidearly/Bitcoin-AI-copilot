@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from 'react';
 
-import { Monitor, Moon, Sun } from 'lucide-react';
+import { MonitorSmartphone, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
-import { Skeleton } from '@/components/ui/skeleton';
 
 export function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
@@ -32,7 +31,7 @@ export function ThemeToggle() {
     >
       {theme === 'light' && <Sun className="h-4 w-4" />}
       {theme === 'dark' && <Moon className="h-4 w-4" />}
-      {theme === 'system' && <Monitor className="h-4 w-4" />}
+      {theme === 'system' && <MonitorSmartphone className="h-4 w-4" />}
     </button>
   );
 }

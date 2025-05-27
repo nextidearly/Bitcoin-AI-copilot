@@ -11,11 +11,10 @@ import Image from 'next/image';
 
 import { SavedPrompt } from '@prisma/client';
 import { Attachment } from 'ai';
-import { Image as ImageIcon, SendHorizontal, X } from 'lucide-react';
+import { Image as ImageIcon, SendHorizontal, X, Plus, ArrowUp } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { SavedPromptsMenu } from '@/components/saved-prompts-menu';
-import { BorderBeam } from '@/components/ui/border-beam';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { uploadImage } from '@/lib/upload';
@@ -78,7 +77,7 @@ export function ConversationInput({
   onSubmit,
   onChat = false,
   savedPrompts = [],
-  setSavedPrompts = () => {},
+  setSavedPrompts = () => { },
 }: ConversationInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -244,8 +243,8 @@ export function ConversationInput({
 
   const filteredPrompts = value.startsWith('/')
     ? savedPrompts.filter((savedPrompt) =>
-        savedPrompt.title.toLowerCase().includes(value.slice(1).toLowerCase()),
-      )
+      savedPrompt.title.toLowerCase().includes(value.slice(1).toLowerCase()),
+    )
     : savedPrompts;
 
   function handlePromptMenuClick(subtitle: string) {
@@ -254,9 +253,9 @@ export function ConversationInput({
 
   return (
     <div
-      className={`relative ${!onChat ? 'duration-500 animate-in fade-in slide-in-from-bottom-4' : ''}`}
+      className={`relative`}
     >
-      <div className="relative rounded-xl bg-muted">
+      <div className="relative rounded-3xl bg-muted">
         <form onSubmit={handleSubmit} className="flex flex-col">
           {onChat && (
             <SavedPromptsMenu
@@ -288,25 +287,16 @@ export function ConversationInput({
             onPaste={handlePaste}
             maxLength={MAX_CHARS}
             placeholder={
-              onChat ? 'Send a message...' : 'Start a new conversation...'
+              onChat ? 'Ask anything...' : 'Start a new chat...'
             }
             className={cn(
-              'min-h-[110px] max-h-[350px] overflow-y-scroll w-full resize-none border-0 bg-transparent px-4 py-3 text-base focus-visible:ring-0',
+              'min-h-[60px] max-h-[110px] overflow-y-scroll w-full resize-none border-0 bg-transparent px-4 py-3 text-base focus-visible:ring-0 shadow-none',
               attachments.length > 0 ? 'rounded-t-none' : 'rounded-t-xl',
             )}
           />
 
-          <div className="flex items-center justify-between border-t px-4 py-2">
+          <div className="flex items-center justify-between px-4 py-1 gap-2">
             <div className="flex w-full flex-row items-center justify-between">
-              <span className="text-xs text-muted-foreground">
-                Type / to search for saved prompts (e.g. /Bitcoin Price...)
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {value.length}/{MAX_CHARS}
-              </span>
-            </div>
-
-            <div className="flex">
               <input
                 ref={fileInputRef}
                 type="file"
@@ -320,12 +310,18 @@ export function ConversationInput({
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 hover:bg-muted"
+                className="h-8 w-8 hover:bg-muted text-muted-foreground"
                 onClick={() => fileInputRef.current?.click()}
               >
-                <ImageIcon className="h-5 w-5" />
+                <Plus className="h-5 w-5" />
               </Button>
 
+              <span className="text-xs text-muted-foreground">
+                {value.length}/{MAX_CHARS}
+              </span>
+            </div>
+
+            <div className="flex">
               <Button
                 type="submit"
                 size="icon"
@@ -334,18 +330,16 @@ export function ConversationInput({
                   (!value.trim() && attachments.length === 0) ||
                   attachments.some((att) => att.uploading)
                 }
-                className="group relative flex h-8 w-8 items-center justify-center rounded-lg 
+                className="group relative flex h-8 w-8 items-center justify-center rounded-full
                   transition-all duration-200 ease-in-out
-                  hover:bg-primary hover:text-primary-foreground 
-                  active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+                  hover:bg-primary hover:text-primary-foreground
+                  active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 text-muted-foreground"
               >
-                <SendHorizontal className="h-4 w-4 transition-transform duration-200 ease-out group-hover:scale-110" />
+                <ArrowUp className="h-4 w-4 transition-transform duration-200 ease-out group-hover:scale-110" />
               </Button>
             </div>
           </div>
         </form>
-
-        {!onChat && <BorderBeam size={250} duration={8} delay={9} />}
       </div>
     </div>
   );

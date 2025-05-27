@@ -10,7 +10,6 @@ import {
 } from '@/server/db/queries';
 
 import ChatInterface from './chat-interface';
-import { ChatSkeleton } from './chat-skeleton';
 
 /**
  * Generates metadata for the chat page based on conversation details
@@ -81,7 +80,7 @@ export default function ChatPage({
   params: Promise<{ id: string }>;
 }) {
   return (
-    <Suspense fallback={<ChatSkeleton />}>
+    <Suspense fallback={<div className='flex justify-center items-center text-sm h-screen'>Loading messages...</div>}>
       <ChatData params={params} />
     </Suspense>
   );

@@ -349,36 +349,7 @@ function ChatMessage({
   const hasAttachments =
     message.experimental_attachments &&
     message.experimental_attachments.length > 0;
-  const showAvatar =
-    !isUser && (index === 0 || messages[index - 1].role === 'user');
   const isConsecutive = index > 0 && messages[index - 1].role === message.role;
-  const { user } = useUser();
-
-  async function handleSavePrompt() {
-    if (!user) {
-      toast.error('Unauthorized');
-      return;
-    }
-
-    toast.promise(
-      createSavedPrompt({
-        title: message.content.trim().slice(0, 30) + '...',
-        content: message.content.trim(),
-      }).then((res) => {
-        if (!res?.data?.data) {
-          throw new Error();
-        }
-
-        const savedPrompt = res?.data?.data;
-        setSavedPrompts((old) => [...old, savedPrompt]);
-      }),
-      {
-        loading: 'Saving prompt...',
-        success: 'Prompt saved',
-        error: 'Failed to save prompt',
-      },
-    );
-  }
 
   // Preprocess content to handle image dimensions
   const processedContent = message.content?.replace(
@@ -572,13 +543,8 @@ function ImagePreviewDialog({
 function LoadingMessage() {
   return (
     <div className="flex w-full items-start gap-3">
-      <Avatar className="mt-0.5 h-8 w-8 shrink-0 select-none">
-        <Logo />
-        <AvatarFallback>AI</AvatarFallback>
-      </Avatar>
-
       <div className="relative flex max-w-[85%] flex-col items-start gap-2">
-        <div className="relative flex flex-col gap-2 rounded-2xl bg-muted/60 px-4 py-3 text-sm shadow-sm">
+        <div className="relative flex flex-col gap-2 rounded-2xl text-sm">
           <div className="flex items-center gap-1">
             <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-foreground/50 [animation-delay:-0.3s]" />
             <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-foreground/50 [animation-delay:-0.15s]" />
@@ -733,9 +699,7 @@ export default function ChatInterface({
       </div>
 
       <div className="sticky bottom-0 z-10">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background via-background/95 to-background/0" />
         <div className="relative mx-auto w-full max-w-3xl px-4 py-4">
-
           <ConversationInput
             value={input}
             onChange={setInput}

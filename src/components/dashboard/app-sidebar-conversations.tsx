@@ -259,7 +259,7 @@ export const AppSidebarConversations = () => {
   if (isUserLoading) {
     return (
       <SidebarGroup>
-        <SidebarGroupLabel>Conversations</SidebarGroupLabel>
+        <SidebarGroupLabel>History</SidebarGroupLabel>
         <div className="flex items-center justify-center">
           <Loader2 className="mt-4 h-4 w-4 animate-spin" />
         </div>
@@ -271,7 +271,7 @@ export const AppSidebarConversations = () => {
     <SidebarGroup>
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <div className="flex items-center justify-between pr-2">
-          <SidebarGroupLabel>Conversations</SidebarGroupLabel>
+          <SidebarGroupLabel>History</SidebarGroupLabel>
           <CollapsibleTrigger asChild>
             <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
               <ChevronDown

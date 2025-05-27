@@ -7,7 +7,7 @@ import { transferTokenServer } from '@/server/utils';
 import { SOL_MINT } from '@/types/helius/portfolio';
 import { PaymentError, PaymentErrorCode } from '@/types/subscription';
 
-export const maxDuration = 300;
+export const maxDuration = 60;
 export const dynamic = 'force-dynamic'; // static by default, unless reading the request
 
 export async function GET(request: Request) {

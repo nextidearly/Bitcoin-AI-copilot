@@ -22,7 +22,7 @@ export function ToolResult({ toolName, result, header }: ToolResultProps) {
   );
 
   const content = config?.render
-    ? config?.render(result)
+    ? config?.render(result as any)
     : DefaultToolResultRenderer({ result });
   if (!content) return null;
 

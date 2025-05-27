@@ -9,24 +9,24 @@ import useSWR from 'swr';
 
 import { debugLog } from '@/lib/debug';
 import { getUserData } from '@/server/actions/user';
-import { HaloAgentUser, PrismaUser, PrivyUser } from '@/types/db';
+import { BitxUser, PrismaUser, PrivyUser } from '@/types/db';
 
 /**
- * Extended interface for HaloAgentUser that includes Privy functionality
+ * Extended interface for BitxUser that includes Privy functionality
  * Omits 'user' and 'ready' from PrivyInterface to avoid conflicts
  */
-type HaloAgentUserInterface = Omit<PrivyInterface, 'user' | 'ready'> & {
+type BitxUserInterface = Omit<PrivyInterface, 'user' | 'ready'> & {
   isLoading: boolean;
-  user: HaloAgentUser | null;
+  user: BitxUser | null;
 };
 
 /**
- * Loads cached HaloAgentUser data from localStorage
- * @returns {HaloAgentUser | null} Cached user data or null if not found/invalid
+ * Loads cached BitxUser data from localStorage
+ * @returns {BitxUser | null} Cached user data or null if not found/invalid
  */
-function loadFromCache(): HaloAgentUser | null {
+function loadFromCache(): BitxUser | null {
   try {
-    const cached = localStorage.getItem('halo-user-data');
+    const cached = localStorage.getItem('bitx-user-data');
     if (cached) {
       debugLog('Loading user data from cache', cached, {
         module: 'useUser',
@@ -49,19 +49,19 @@ function loadFromCache(): HaloAgentUser | null {
 }
 
 /**
- * Saves HaloAgentUser data to localStorage
- * @param {HaloAgentUser | null} data User data to cache or null to clear cache
+ * Saves BitxUser data to localStorage
+ * @param {BitxUser | null} data User data to cache or null to clear cache
  */
-function saveToCache(data: HaloAgentUser | null) {
+function saveToCache(data: BitxUser | null) {
   try {
     if (data) {
-      localStorage.setItem('halo-user-data', JSON.stringify(data));
+      localStorage.setItem('bitx-user-data', JSON.stringify(data));
       debugLog('User data saved to cache', data, {
         module: 'useUser',
         level: 'info',
       });
     } else {
-      localStorage.removeItem('halo-user-data');
+      localStorage.removeItem('bitx-user-data');
       debugLog('User data removed from cache', null, {
         module: 'useUser',
         level: 'info',
@@ -76,13 +76,13 @@ function saveToCache(data: HaloAgentUser | null) {
 }
 
 /**
- * Fetches HaloAgentUser data from the server
+ * Fetches BitxUser data from the server
  * @param {PrivyUser} privyUser The authenticated Privy user
- * @returns {Promise<HaloAgentUser | null>} User data or null if fetch fails
+ * @returns {Promise<BitxUser | null>} User data or null if fetch fails
  */
-async function fetchHaloAgentUserData(
+async function fetchBitxUserData(
   privyUser: PrivyUser,
-): Promise<HaloAgentUser | null> {
+): Promise<BitxUser | null> {
   try {
     const response = await getUserData();
     if (response?.data?.success && response?.data?.data) {
@@ -94,7 +94,7 @@ async function fetchHaloAgentUserData(
       return {
         ...prismaUser,
         privyUser: privyUser as PrivyUser,
-      } as HaloAgentUser;
+      } as BitxUser;
     }
     debugLog(
       'Server returned unsuccessful user data response',
@@ -115,13 +115,13 @@ async function fetchHaloAgentUserData(
 }
 
 /**
- * Custom hook for managing HaloAgentUser data fetching, caching, and synchronization
+ * Custom hook for managing BitxUser data fetching, caching, and synchronization
  * Combines Privy authentication with our user data management system
- * @returns {HaloAgentUserInterface} Object containing user data, loading state, and Privy interface methods
+ * @returns {BitxUserInterface} Object containing user data, loading state, and Privy interface methods
  */
-export function useUser(): HaloAgentUserInterface {
+export function useUser(): BitxUserInterface {
   const { ready, user: privyUser, ...privyRest } = usePrivy();
-  const [initialCachedUser, setInitialCachedUser] = useState<HaloAgentUser | null>(
+  const [initialCachedUser, setInitialCachedUser] = useState<BitxUser | null>(
     null,
   );
   const router = useRouter();
@@ -138,9 +138,9 @@ export function useUser(): HaloAgentUserInterface {
 
   /**
    * SWR fetcher function that combines server data with Privy user data
-   * @returns {Promise<HaloAgentUser | null>} Combined user data or null
+   * @returns {Promise<BitxUser | null>} Combined user data or null
    */
-  const fetcher = useCallback(async (): Promise<HaloAgentUser | null> => {
+  const fetcher = useCallback(async (): Promise<BitxUser | null> => {
     if (!ready || !privyUser) {
       debugLog('Privy not ready or user not logged in', null, {
         module: 'useUser',
@@ -150,18 +150,18 @@ export function useUser(): HaloAgentUserInterface {
     }
 
     if (privyUser) {
-      debugLog('Fetching HaloAgentUser data from server', null, {
+      debugLog('Fetching BitxUser data from server', null, {
         module: 'useUser',
         level: 'info',
       });
-      const haloUser = await fetchHaloAgentUserData(privyUser as PrivyUser);
-      debugLog('Merged HaloAgentUser data', haloUser, {
+      const bitxUser = await fetchBitxUserData(privyUser as PrivyUser);
+      debugLog('Merged BitxUser data', bitxUser, {
         module: 'useUser',
         level: 'info',
       });
-      return haloUser;
+      return bitxUser;
     }
-    debugLog('No valid HaloAgentUser data retrieved', null, {
+    debugLog('No valid BitxUser data retrieved', null, {
       module: 'useUser',
       level: 'warn',
     });
@@ -169,7 +169,7 @@ export function useUser(): HaloAgentUserInterface {
   }, [ready, privyUser]);
 
   // Use SWR for data fetching and state management
-  const { data: haloUser, isValidating: swrLoading } = useSWR<HaloAgentUser | null>(
+  const { data: bitxUser, isValidating: swrLoading } = useSWR<BitxUser | null>(
     swrKey,
     fetcher,
     {
@@ -179,15 +179,15 @@ export function useUser(): HaloAgentUserInterface {
     },
   );
 
-  debugLog('Current HaloAgentUser data', haloUser, { module: 'useUser' });
+  debugLog('Current BitxUser data', bitxUser, { module: 'useUser' });
   debugLog('SWR validation status', swrLoading, { module: 'useUser' });
 
   // Update cache when new user data is fetched
   useEffect(() => {
-    if (haloUser) {
-      saveToCache(haloUser);
+    if (bitxUser) {
+      saveToCache(bitxUser);
     }
-  }, [haloUser]);
+  }, [bitxUser]);
 
   const isLoading = swrLoading && !initialCachedUser;
   debugLog('Loading state', { isLoading }, { module: 'useUser' });
@@ -223,8 +223,8 @@ export function useUser(): HaloAgentUserInterface {
 
   return {
     ...privyRest,
-    isLoading: isLoading || haloUser == null,
-    user: haloUser || null,
+    isLoading: isLoading || bitxUser == null,
+    user: bitxUser || null,
     logout: extendedLogout,
   };
 }

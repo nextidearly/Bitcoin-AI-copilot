@@ -1,6 +1,6 @@
 # Local Development
 
-This describes steps to spin up HaloAgent.studio locally:
+This describes steps to spin up Bitx.studio locally:
 
 ## Environment Variables
 
@@ -94,7 +94,7 @@ pnpm run dev:up
 Sometimes if you add a dependecy you'll have to rebuild the image and clear existing volumes. If you run into issues with dependencies not adding clear your image, volumes, and build cache:
 
 ```
-docker ps -a --filter "name=halo-app-" --format "{{.ID}}" | xargs -r docker rm -f
+docker ps -a --filter "name=bitx-app-" --format "{{.ID}}" | xargs -r docker rm -f
 docker volume rm root_node_modules
 docker volume rm webapp_next
 docker builder prune --all

@@ -17,8 +17,6 @@ import { useChat } from 'ai/react';
 import {
   Bookmark,
   Image as ImageIcon,
-  Loader2,
-  SendHorizontal,
   X,
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -33,20 +31,14 @@ import { Confirmation } from '@/components/confimation';
 import { FloatingWallet } from '@/components/floating-wallet';
 import Logo from '@/components/logo';
 import { ToolResult } from '@/components/message/tool-result';
-import { SavedPromptsMenu } from '@/components/saved-prompts-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import usePolling from '@/hooks/use-polling';
 import { useUser } from '@/hooks/use-user';
 import { useWalletPortfolio } from '@/hooks/use-wallet-portfolio';
 import { EVENTS } from '@/lib/events';
-import { uploadImage } from '@/lib/upload';
 import { cn } from '@/lib/utils';
 import {
   createSavedPrompt,
-  getSavedPrompts,
-  setSavedPromptLastUsedAt,
 } from '@/server/actions/saved-prompt';
 import { type ToolActionResult, ToolUpdate } from '@/types/util';
 
@@ -108,24 +100,7 @@ interface ToolInvocation {
 }
 
 // Constants
-const MAX_CHARS = 2000;
 const MAX_VISIBLE_ATTACHMENTS = 4;
-const MAX_JSON_LINES = 20; // Maximum number of lines to show in JSON output
-
-// Utility functions
-const truncateJson = (json: unknown): string => {
-  const formatted = JSON.stringify(json, null, 2);
-  const lines = formatted.split('\n');
-
-  if (lines.length <= MAX_JSON_LINES) {
-    return formatted;
-  }
-
-  const firstHalf = lines.slice(0, MAX_JSON_LINES / 2);
-  const lastHalf = lines.slice(-MAX_JSON_LINES / 2);
-
-  return [...firstHalf, '    ...', ...lastHalf].join('\n');
-};
 
 const getGridLayout = (count: number) => {
   if (count === 1) return 'grid-cols-1';
@@ -420,24 +395,7 @@ function ChatMessage({
         index === 0 && 'mt-0',
       )}
     >
-      {showAvatar ? (
-        <Avatar className="mt-0.5 h-8 w-8 shrink-0 select-none">
-          <Logo />
-          <AvatarFallback>AI</AvatarFallback>
-        </Avatar>
-      ) : !isUser ? (
-        <div className="w-8" aria-hidden="true" />
-      ) : null}
-
       <div className="group relative flex max-w-[85%] flex-row items-center">
-        {isUser && (
-          <button
-            onClick={handleSavePrompt}
-            className="mr-1 hidden pb-4 pl-4 pr-2 pt-4 group-hover:block hover:text-favorite"
-          >
-            <Bookmark className="h-4 w-4" />
-          </button>
-        )}
         <div
           className={cn('relative gap-2', isUser ? 'items-end' : 'items-start')}
         >
@@ -456,15 +414,15 @@ function ChatMessage({
           {message.content && (
             <div
               className={cn(
-                'relative flex flex-col gap-2 rounded-2xl px-4 py-3 text-sm shadow-sm',
-                isUser ? 'bg-primary' : 'bg-muted/60',
+                'relative flex flex-col gap-2 rounded-2xl px-4 py-1 text-sm',
+                isUser ? 'bg-muted' : '',
               )}
             >
               <div
                 className={cn(
                   'prose prose-sm max-w-prose break-words leading-tight md:prose-base',
                   isUser
-                    ? 'prose-invert dark:prose-neutral'
+                    ? 'prose-neutral dark:prose-invert'
                     : 'prose-neutral dark:prose-invert',
                 )}
               >
@@ -547,9 +505,9 @@ function ImagePreviewDialog({
 
   const slides = previewImage.attachments
     ? previewImage.attachments.map((attachment) => ({
-        src: attachment.url,
-        alt: attachment.name,
-      }))
+      src: attachment.url,
+      alt: attachment.name,
+    }))
     : [{ src: previewImage.src, alt: previewImage.alt }];
 
   const isSingleImage = slides.length === 1;
@@ -726,7 +684,7 @@ export default function ChatInterface({
 
     // Create a synthetic event for handleSubmit
     const fakeEvent = {
-      preventDefault: () => {},
+      preventDefault: () => { },
       type: 'submit',
     } as React.FormEvent;
 
@@ -777,10 +735,6 @@ export default function ChatInterface({
       <div className="sticky bottom-0 z-10">
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background via-background/95 to-background/0" />
         <div className="relative mx-auto w-full max-w-3xl px-4 py-4">
-          {/* Floating Wallet */}
-          {portfolio && (
-            <FloatingWallet data={portfolio} isLoading={isPortfolioLoading} />
-          )}
 
           <ConversationInput
             value={input}

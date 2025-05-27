@@ -1,14 +1,14 @@
 version: "3.8"
 
 services:
-  halo-app:
+  bitx-app:
     build:
       context: .
       dockerfile: Dockerfile.local
       target: dev
-    container_name: "halo-app"
+    container_name: "bitx-app"
     depends_on:
-      halo-db:
+      bitx-db:
         condition: service_healthy
     expose:
       - "3000"
@@ -19,24 +19,24 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@halo-db:5432/halodb
-      - DIRECT_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@halo-db:5432/halodb
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@bitx-db:5432/bitxdb
+      - DIRECT_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@bitx-db:5432/bitxdb
     volumes:
       - .:/usr/src/app
       - root_node_modules:/usr/src/app/node_modules
       - webapp_next:/usr/src/app/.next
 
-  halo-studio:
+  bitx-studio:
     build:
       context: .
       dockerfile: Dockerfile.local
       target: dev
-    container_name: "halo-studio"
+    container_name: "bitx-studio"
     depends_on:
-      halo-db:
+      bitx-db:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@halo-db:5432/halodb
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@bitx-db:5432/bitxdb
     expose:
       - "5555"
     ports:
@@ -48,9 +48,9 @@ services:
       - root_node_modules:/usr/src/app/node_modules
       - webapp_next:/usr/src/app/.next
 
-  halo-db:
+  bitx-db:
     image: "postgres:15"
-    container_name: "halo-db"
+    container_name: "bitx-db"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
@@ -62,9 +62,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - "halo-db-data:/var/lib/postgresql/data"
+      - "bitx-db-data:/var/lib/postgresql/data"
 
 volumes:
-  halo-db-data:
+  bitx-db-data:
   root_node_modules:
   webapp_next:

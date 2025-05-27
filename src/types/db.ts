@@ -41,7 +41,7 @@ export type PrismaUser = _PrismaUser & {
     | null;
 };
 
-export type HaloAgentUser = Pick<
+export type BitxUser = Pick<
   PrismaUser,
   | 'id'
   | 'privyId'

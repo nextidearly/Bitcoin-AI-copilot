@@ -4,7 +4,7 @@ export class PaymentError extends Error {
     message: string,
   ) {
     super(message);
-    this.name = 'HaloAgentPaymentError';
+    this.name = 'BitxPaymentError';
   }
 }
 

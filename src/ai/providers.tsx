@@ -12,6 +12,8 @@ import { actionTools } from './generic/action';
 import { jinaTools } from './generic/jina';
 import { telegramTools } from './generic/telegram';
 import { utilTools } from './generic/util';
+import { bitcoinTools } from './bitcoin/bitcoin';
+import { magicEdenTools } from './bitcoin/magic-eden';
 
 const usingAnthropic = !!process.env.ANTHROPIC_API_KEY;
 
@@ -48,7 +50,7 @@ export const orchestratorModel = openai('gpt-4o-mini');
 const openAiModel = openai(process.env.OPENAI_MODEL_NAME || 'gpt-4o');
 
 export const defaultSystemPrompt = `
-Your name is HaloAgent (Agent).
+Your name is Bitx (Agent).
 You are a specialized AI assistant for Bitcoin blockchain and DeFi operations, designed to provide secure, accurate, and user-friendly assistance.
 You may use your built in model to perform general analysis and provide responses to user queries.
 If you need to perform specific tasks you don't have built in training for, you can use the available tools.
@@ -109,7 +111,7 @@ export interface ToolConfig {
   execute?: <T>(
     params: z.infer<T extends z.ZodType ? T : never>,
   ) => Promise<any>;
-  render?: (result: unknown) => React.ReactNode | null;
+  render?: (props: { data: any }) => React.ReactNode | null;
   agentKit?: any;
   userId?: any;
   requiresConfirmation?: boolean;
@@ -141,6 +143,8 @@ export const defaultTools: Record<string, ToolConfig> = {
   ...jinaTools,
   ...utilTools,
   ...telegramTools,
+  ...magicEdenTools,
+  ...bitcoinTools,
 };
 
 export function filterTools(
@@ -167,74 +171,8 @@ export function filterTools(
   );
 }
 
-export const coreTools: Record<string, ToolConfig> = {
-  ...actionTools,
-  ...utilTools,
-  ...jinaTools,
-};
-
-export const toolsets: Record<
-  string,
-  { tools: string[]; description: string }
-> = {
-  coreTools: {
-    tools: ['actionTools', 'utilTools', 'jupiterTools'],
-    description:
-      'Core utility tools for general operations, including actions, searching token info, utility functions.',
-  },
-  webTools: {
-    tools: ['jinaTools'],
-    description:
-      'Web scraping and content extraction tools for reading web pages and extracting content.',
-  },
-  defiTools: {
-    tools: ['solanaTools', 'dexscreenerTools'],
-    description:
-      'Tools for interacting with DeFi protocols on Bitcoin, including swaps, market data, token information and details.',
-  },
-  traderTools: {
-    tools: ['birdeyeTools'],
-    description:
-      'Tools for analyzing and tracking traders and trades on Bitcoin DEXes.',
-  },
-  financeTools: {
-    tools: ['definedTools'],
-    description:
-      'Tools for retrieving and applying logic to static financial data, including analyzing trending tokens.',
-  },
-  tokenLaunchTools: {
-    tools: ['pumpfunTools'],
-    description:
-      'Tools for launching tokens on PumpFun, including token deployment and management.',
-  },
-  chartTools: {
-    tools: ['chartTools'],
-    description: 'Tools for generating and displaying various types of charts.',
-  },
-  nftTools: {
-    tools: ['magicEdenTools'],
-    description:
-      'Tools for interacting with NFTs, including Magic Eden integrations.',
-  },
-  socialTools: {
-    tools: ['telegramTools'],
-    description:
-      'Tools for interacting with Telegram for notifications and messaging.',
-  },
-  cookieTools: {
-    tools: ['cookieTools'],
-    description:
-      'Tools for retrieving information about Bitcoin AI Agents, and Tweets related to Agents.',
-  },
-  bundleTools: {
-    tools: ['bundleTools'],
-    description:
-      'Tools to analyze potential bundles and snipers for a contracts.',
-  },
-};
-
 export const orchestrationPrompt = `
-You are HaloAgent, an AI assistant specialized in Bitcoin blockchain and DeFi operations.
+You are Bitx, an AI assistant specialized in Bitcoin blockchain and DeFi operations.
 
 Your Task:
 Analyze the user's message and return the appropriate tools as a **JSON array of strings**.  

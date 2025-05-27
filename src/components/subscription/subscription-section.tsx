@@ -157,7 +157,7 @@ export function SubscriptionSection({
             <AlertDialogDescription>
               {!isSubscribed ? (
                 <>
-                  You are about to subscribe to HaloAgent for {subscriptionPrice} SOL
+                  You are about to subscribe to Bitx for {subscriptionPrice} SOL
                   per month.
                   <br />
                   The SOL balance of the address{' '}

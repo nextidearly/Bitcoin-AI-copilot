@@ -24,9 +24,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: {
     template: '%s | HaloAgent',
-    default: 'HaloAgent - The Intelligent Copilot for Solana',
+    default: 'HaloAgent - The Intelligent Copilot for Bitcoin',
   },
-  description: 'The Intelligent Copilot elevating your Solana experience.',
+  description: 'The Intelligent Copilot elevating your Bitcoin experience.',
 
   icons: {
     icon: '/logo.svg',

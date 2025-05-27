@@ -23,7 +23,7 @@ export const CopyableText = ({ text, showSolscan = false }: Props) => {
   const isValidBs58 = (text: string): boolean => {
     try {
       const decoded = bs58.decode(text);
-      return decoded.length === 32; // Solana address should be 32 bytes
+      return decoded.length === 32; // Bitcoin address should be 32 bytes
     } catch {
       return false;
     }

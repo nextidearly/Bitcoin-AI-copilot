@@ -124,7 +124,7 @@ export async function POST(req: Request) {
     const systemPrompt = [
       defaultSystemPrompt,
       `History of attachments: ${JSON.stringify(attachments)}`,
-      `User Solana wallet public key: ${publicKey}`,
+      `User Bitcoin wallet public key: ${publicKey}`,
       `User ID: ${userId}`,
       `Conversation ID: ${conversationId}`,
       `Degen Mode: ${degenMode}`,

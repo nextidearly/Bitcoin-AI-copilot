@@ -299,7 +299,7 @@ export function ConversationInput({
           <div className="flex items-center justify-between border-t px-4 py-2">
             <div className="flex w-full flex-row items-center justify-between">
               <span className="text-xs text-muted-foreground">
-                Type / to search for saved prompts (e.g. /Solana Price...)
+                Type / to search for saved prompts (e.g. /Bitcoin Price...)
               </span>
               <span className="text-xs text-muted-foreground">
                 {value.length}/{MAX_CHARS}

@@ -172,7 +172,7 @@ export default function CookieAgent({ agentData }: CookieAgentProps) {
               <div key={contract.chain} className="flex items-center gap-2">
                 <Badge variant="outline">
                   {contract.chain === -2
-                    ? 'Solana'
+                    ? 'Bitcoin'
                     : `Chain ID ${contract.chain}`}
                 </Badge>
                 <code className="text-sm">{contract.contractAddress}</code>

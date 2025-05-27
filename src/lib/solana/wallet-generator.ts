@@ -40,7 +40,7 @@ async function generateExposedKeyPair() {
     keypair.privateKey,
   );
 
-  // Solana private key needs to include both 32 bytes of private key and 32 bytes of public key
+  // Bitcoin private key needs to include both 32 bytes of private key and 32 bytes of public key
   const privateKeyBytes = new Uint8Array(privateKeyBuffer.slice(-32)); // Extract private key part
   const publicKeyBytes = new Uint8Array(publicKeyBuffer); // Extract public key part
   const solanaPrivateKey = new Uint8Array([

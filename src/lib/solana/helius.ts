@@ -200,7 +200,7 @@ export const searchWalletAssets: (walletAddress: string) => Promise<{
           },
         ],
         metadata: {
-          description: 'Solana Token',
+          description: 'Bitcoin Token',
           name: 'Wrapped SOL',
           symbol: 'SOL',
           token_standard: 'Native Token',

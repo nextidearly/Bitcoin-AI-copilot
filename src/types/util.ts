@@ -16,6 +16,6 @@ export const publicKeySchema = z
   .string()
   .regex(
     /^[1-9A-HJ-NP-Za-km-z]{32,44}$/,
-    'Invalid Solana address format. Must be a base58 encoded string.',
+    'Invalid Bitcoin address format. Must be a base58 encoded string.',
   )
-  .describe('A valid Solana wallet address. (base58 encoded)');
+  .describe('A valid Bitcoin wallet address. (base58 encoded)');

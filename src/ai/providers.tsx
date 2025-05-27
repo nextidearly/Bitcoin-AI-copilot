@@ -12,16 +12,6 @@ import { actionTools } from './generic/action';
 import { jinaTools } from './generic/jina';
 import { telegramTools } from './generic/telegram';
 import { utilTools } from './generic/util';
-import { bundleTools } from './solana/bundle';
-import { birdeyeTools } from './solana/birdeye';
-import { chartTools } from './solana/chart';
-import { cookietools } from './solana/cookie';
-import { definedTools } from './solana/defined-fi';
-import { dexscreenerTools } from './solana/dexscreener';
-import { jupiterTools } from './solana/jupiter';
-import { magicEdenTools } from './solana/magic-eden';
-import { pumpfunTools } from './solana/pumpfun';
-import { solanaTools } from './solana/solana';
 
 const usingAnthropic = !!process.env.ANTHROPIC_API_KEY;
 
@@ -59,7 +49,7 @@ const openAiModel = openai(process.env.OPENAI_MODEL_NAME || 'gpt-4o');
 
 export const defaultSystemPrompt = `
 Your name is HaloAgent (Agent).
-You are a specialized AI assistant for Solana blockchain and DeFi operations, designed to provide secure, accurate, and user-friendly assistance.
+You are a specialized AI assistant for Bitcoin blockchain and DeFi operations, designed to provide secure, accurate, and user-friendly assistance.
 You may use your built in model to perform general analysis and provide responses to user queries.
 If you need to perform specific tasks you don't have built in training for, you can use the available tools.
 
@@ -69,7 +59,6 @@ Critical Rules:
 - If the previous tool result contains the key-value pair 'suppressFollowUp: true':
   Respond only with something like:
      - "Take a look at the results above"
-- Always use the \`searchToken\` tool to get the correct token mint first and ask for user confirmation.
 - Do not attempt to call a tool that you have not been provided, let the user know that the requested action is not supported.
 
 Confirmation Handling:
@@ -149,19 +138,9 @@ export function DefaultToolResultRenderer({ result }: { result: unknown }) {
 
 export const defaultTools: Record<string, ToolConfig> = {
   ...actionTools,
-  ...solanaTools,
-  ...definedTools,
-  ...pumpfunTools,
-  ...jupiterTools,
-  ...dexscreenerTools,
-  ...magicEdenTools,
   ...jinaTools,
   ...utilTools,
-  ...chartTools,
   ...telegramTools,
-  ...bundleTools,
-  ...birdeyeTools,
-  ...cookietools,
 };
 
 export function filterTools(
@@ -211,12 +190,12 @@ export const toolsets: Record<
   defiTools: {
     tools: ['solanaTools', 'dexscreenerTools'],
     description:
-      'Tools for interacting with DeFi protocols on Solana, including swaps, market data, token information and details.',
+      'Tools for interacting with DeFi protocols on Bitcoin, including swaps, market data, token information and details.',
   },
   traderTools: {
     tools: ['birdeyeTools'],
     description:
-      'Tools for analyzing and tracking traders and trades on Solana DEXes.',
+      'Tools for analyzing and tracking traders and trades on Bitcoin DEXes.',
   },
   financeTools: {
     tools: ['definedTools'],
@@ -245,7 +224,7 @@ export const toolsets: Record<
   cookieTools: {
     tools: ['cookieTools'],
     description:
-      'Tools for retrieving information about Solana AI Agents, and Tweets related to Agents.',
+      'Tools for retrieving information about Bitcoin AI Agents, and Tweets related to Agents.',
   },
   bundleTools: {
     tools: ['bundleTools'],
@@ -255,7 +234,7 @@ export const toolsets: Record<
 };
 
 export const orchestrationPrompt = `
-You are HaloAgent, an AI assistant specialized in Solana blockchain and DeFi operations.
+You are HaloAgent, an AI assistant specialized in Bitcoin blockchain and DeFi operations.
 
 Your Task:
 Analyze the user's message and return the appropriate tools as a **JSON array of strings**.  

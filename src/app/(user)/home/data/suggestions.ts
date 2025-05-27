@@ -13,11 +13,11 @@ export const SUGGESTIONS: Suggestion[] = [
   {
     id: 'swap-sol-usdc',
     title: 'Swap 1 SOL for USDC',
-    subtitle: 'using Jupiter to swap on Solana',
+    subtitle: 'using Jupiter to swap on Bitcoin',
   },
   {
     id: 'solana-trends',
-    title: "What's trending on Solana?",
+    title: "What's trending on Bitcoin?",
     subtitle: 'find the current market trends',
   },
   {

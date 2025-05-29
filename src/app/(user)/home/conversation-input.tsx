@@ -255,7 +255,7 @@ export function ConversationInput({
     <div
       className={`relative`}
     >
-      <div className="relative rounded-3xl bg-muted">
+      <div className="relative rounded-3xl bg-muted border-muted-foreground/10 border-[1.5px]">
         <form onSubmit={handleSubmit} className="flex flex-col">
           {onChat && (
             <SavedPromptsMenu

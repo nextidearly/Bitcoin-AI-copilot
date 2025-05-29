@@ -40,11 +40,11 @@ export const AppSidebarUser = () => {
           <SidebarMenuButton
               onClick={logout}
             size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground bg-muted"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground bg-muted/5"
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={twitterProfileImage || undefined} />
-                <AvatarFallback className="rounded-full bg-muted-foreground/10">
+                <AvatarFallback className="rounded-full bg-muted/10">
                   <span className='uppercase font-semibold'>{label?.substring(0, 1)}</span>
                 </AvatarFallback>
               </Avatar>

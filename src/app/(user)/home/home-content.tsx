@@ -7,58 +7,34 @@ import { usePathname } from 'next/navigation';
 import { SavedPrompt } from '@prisma/client';
 import { Attachment, JSONValue } from 'ai';
 import { useChat } from 'ai/react';
-import { Loader2 } from 'lucide-react';
+import { ChartColumn, Code, FileText, Lightbulb, Loader2, PenLine, SquareTerminal } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 import ChatInterface from '@/app/(user)/chat/[id]/chat-interface';
 import { SavedPromptsMenu } from '@/components/saved-prompts-menu';
-import BlurFade from '@/components/ui/blur-fade';
-import TypingAnimation from '@/components/ui/typing-animation';
 import { useConversations } from '@/hooks/use-conversations';
 import { useUser } from '@/hooks/use-user';
 import { useWalletPortfolio } from '@/hooks/use-wallet-portfolio';
 import { EVENTS } from '@/lib/events';
 import {
-  IS_SUBSCRIPTION_ENABLED,
   IS_TRIAL_ENABLED,
   cn,
   getTrialTokensFloat,
 } from '@/lib/utils';
 import {
-  getSavedPrompts,
   setSavedPromptLastUsedAt,
 } from '@/server/actions/saved-prompt';
 
-import { IntegrationsGrid } from './components/integrations-grid';
 import { ConversationInput } from './conversation-input';
-import { getRandomSuggestions } from './data/suggestions';
-import { SuggestionCard } from './suggestion-card';
-
-interface SectionTitleProps {
-  children: React.ReactNode;
-}
-
-function SectionTitle({ children }: SectionTitleProps) {
-  return (
-    <h2 className="mb-2 px-1 text-sm font-medium text-muted-foreground/80">
-      {children}
-    </h2>
-  );
-}
+import BlurFade from '@/components/ui/blur-fade';
 
 export function HomeContent() {
   const pathname = usePathname();
   const [savedPrompts, setSavedPrompts] = useState<SavedPrompt[]>([]);
-  const [isFetchingSavedPrompts, setIsFetchingSavedPrompts] =
-    useState<boolean>(true);
-  const suggestions = useMemo(() => getRandomSuggestions(4), []);
   const [showChat, setShowChat] = useState(false);
   const [chatId, setChatId] = useState(() => uuidv4());
   const { user, isLoading: isUserLoading } = useUser();
-  const [verifyingTx, setVerifyingTx] = useState<string | null>(null);
-  const [verificationAttempts, setVerificationAttempts] = useState(0);
-  const [showTrialBanner, setShowTrialBanner] = useState(true);
-  const MAX_VERIFICATION_ATTEMPTS = 20;
+  const [type, setType] = useState('');
 
   const { conversations, refreshConversations } = useConversations(user?.id);
 
@@ -67,20 +43,6 @@ export function HomeContent() {
     setChatId(uuidv4());
   }, []);
 
-  useEffect(() => {
-    async function fetchSavedPrompts() {
-      try {
-        const res = await getSavedPrompts();
-        const savedPrompts = res?.data?.data || [];
-
-        setSavedPrompts(savedPrompts);
-      } catch (err) {
-        console.error(err);
-      }
-      setIsFetchingSavedPrompts(false);
-    }
-    fetchSavedPrompts();
-  }, []);
 
   const { messages, input, handleSubmit, setInput } = useChat({
     id: chatId,
@@ -209,31 +171,11 @@ export function HomeContent() {
     );
   }
 
-  const toggleTrialBanner = () => {
-    setShowTrialBanner((prev) => !prev);
-  };
-
-  const RENDER_TRIAL_BANNER =
-    IS_TRIAL_ENABLED &&
-    !hasEAP &&
-    !user?.subscription?.active &&
-    !meetsTokenBalance &&
-    showTrialBanner;
   const USER_HAS_TRIAL =
     IS_TRIAL_ENABLED &&
     !hasEAP &&
     !user?.subscription?.active &&
     meetsTokenBalance;
-  const RENDER_SUB_BANNER =
-    !hasEAP &&
-    !user?.subscription?.active &&
-    !RENDER_TRIAL_BANNER &&
-    !USER_HAS_TRIAL;
-  const RENDER_EAP_BANNER =
-    !IS_SUBSCRIPTION_ENABLED &&
-    !hasEAP &&
-    !RENDER_TRIAL_BANNER &&
-    !USER_HAS_TRIAL;
 
   const USER_HAS_ACCESS =
     hasEAP || user?.subscription?.active || USER_HAS_TRIAL;
@@ -249,7 +191,7 @@ export function HomeContent() {
         className="mb-12 text-center text-xl font-semibold tracking-tight md:text-4xl lg:text-4xl"
       >How can I help with?</div>
 
-      <div className="mx-auto w-full max-w-3xl space-y-8">
+      <div className="mx-auto w-full max-w-3xl space-y-4">
         <BlurFade delay={0.1}>
           <ConversationInput
             value={input}
@@ -258,6 +200,7 @@ export function HomeContent() {
             savedPrompts={savedPrompts}
             setSavedPrompts={setSavedPrompts}
           />
+
           <SavedPromptsMenu
             input={input}
             isFetchingSavedPrompts={false}
@@ -268,7 +211,48 @@ export function HomeContent() {
             onHomeScreen={true}
           />
         </BlurFade>
+        <BlurFade delay={0.3}>
+          <div className='flex flex-wrap gap-3 px-0 sm:px-3 w-full'>
+            <button
+              onClick={() => setType('analyze')}
+              className={`${type === 'analyze' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+            >
+              <ChartColumn size={16} color="#52b7cb" strokeWidth={3} />
+              Analyze data
+            </button>
+            <button
+              onClick={() => setType('brainstorm')}
+              className={`${type === 'brainstorm' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+            >
+              <Lightbulb size={16} color="#e6af19" strokeWidth={3} />
+              Brainstorm
+            </button>
+            <button
+              onClick={() => setType('text')}
+              className={`${type === 'text' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+            >
+              <FileText size={16} color="#e17833" strokeWidth={3} />
+              Summarize text
+            </button>
+            <button
+              onClick={() => setType('help')}
+              className={`${type === 'help' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+            >
+              <PenLine size={16} color="#c560e1" strokeWidth={3} />
+              Help me write
+            </button>
+            <button
+              onClick={() => setType('code')}
+              className={`${type === 'code' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+            >
+              <SquareTerminal size={16} color='#4825a7' strokeWidth={3} />
+              Code
+            </button>
+          </div>
+        </BlurFade>
+
       </div>
+
     </div>
   );
 

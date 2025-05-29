@@ -80,7 +80,7 @@ export default function ChatPage({
   params: Promise<{ id: string }>;
 }) {
   return (
-    <Suspense fallback={<div className='flex justify-center items-center text-sm h-screen'>Loading messages...</div>}>
+    <Suspense fallback={<></>}>
       <ChatData params={params} />
     </Suspense>
   );

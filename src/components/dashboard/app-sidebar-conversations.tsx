@@ -126,20 +126,11 @@ const ConversationMenuItem = ({
     }
   };
 
-  const hasUnread = lastMessageAt && lastReadAt && lastMessageAt > lastReadAt;
-
   return (
     <>
       <SidebarMenuItem>
         <SidebarMenuButton asChild isActive={active}>
-          <Link href={`/chat/${id}`} onClick={() => onMarkAsRead(id)}>
-            {hasUnread && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Bell className="h-4 w-4 shrink-0 text-pending" />
-                </TooltipTrigger>
-              </Tooltip>
-            )}
+          <Link href={`/chat/${id}`}>
             <span>{title}</span>
           </Link>
         </SidebarMenuButton>
@@ -256,17 +247,6 @@ export const AppSidebarConversations = () => {
       refreshConversations();
     },
   });
-
-  if (isUserLoading) {
-    return (
-      <SidebarGroup>
-        <SidebarGroupLabel>History</SidebarGroupLabel>
-        <div className="flex items-center justify-center">
-          <Loader2 className="mt-4 h-4 w-4 animate-spin" />
-        </div>
-      </SidebarGroup>
-    );
-  }
 
   return (
     <SidebarGroup>

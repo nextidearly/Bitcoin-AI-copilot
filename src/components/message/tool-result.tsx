@@ -29,14 +29,14 @@ export function ToolResult({ toolName, result, header }: ToolResultProps) {
   const headerContent = (
     <div className="flex w-full items-center gap-2">
       {header}
-      {isCollapsible && (
+      {/* {isCollapsible && (
         <ChevronDown
           className={cn(
             'ml-auto h-4 w-4 shrink-0 transition-transform duration-200',
             isOpen && 'rotate-180 transform',
           )}
         />
-      )}
+      )} */}
     </div>
   );
 

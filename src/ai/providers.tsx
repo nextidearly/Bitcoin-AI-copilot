@@ -172,7 +172,7 @@ export function filterTools(
 }
 
 export const orchestrationPrompt = `
-You are Bitx, an AI assistant specialized in Bitcoin blockchain and DeFi operations.
+You are Bitx, an AI assistant specialized in Bitcoin blockchain ordinals and runes protocol and DeFi operations.
 
 Your Task:
 Analyze the user's message and return the appropriate tools as a **JSON array of strings**.  

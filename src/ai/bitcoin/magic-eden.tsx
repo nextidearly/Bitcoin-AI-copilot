@@ -622,7 +622,7 @@ export const magicEdenTools = {
   getCollectionStats: {
     displayName: '📊 Collection Stats',
     description:
-      'Get detailed statistics for a Magic Eden collection including floor price, listed count, owners, and total volume.',
+      'Get detailed statistics for a collection including floor price, listed count, owners, and total volume.',
     parameters: z.object({
       symbol: z.string().describe('The collection symbol/slug to check'),
     }),
@@ -664,7 +664,7 @@ export const magicEdenTools = {
   getCollectionActivities: {
     displayName: '📈 Collection Activities',
     description:
-      'Get recent trading activities for a Magic Eden collection including bids, listings, and sales.',
+      'Get recent trading activities for a collection including bids, listings, and sales.',
     parameters: z.object({
       symbol: z.string().describe('The collection symbol/slug to check'),
     }),
@@ -707,7 +707,7 @@ export const magicEdenTools = {
   getPopularCollections: {
     displayName: '🔥 Popular Collections',
     description:
-      'Get the most popular collections on Magic Eden based on volume and activity.',
+      'Get the most popular collections on volume and activity.',
     parameters: z.object({
       timeRange: z
         .enum(['1h', '1d', '7d', '30d'])
@@ -773,7 +773,7 @@ export const magicEdenTools = {
   getRuneActivities: {
     displayName: '📈 Rune Activities',
     description:
-      'Get recent trading activities for a Magic Eden rune including bids, listings, and sales.',
+      'Get recent trading activities for a rune including bids, listings, and sales.',
     parameters: z.object({
       symbol: z.string().describe('The rune name/symbol to check'),
     }),
@@ -817,7 +817,7 @@ export const magicEdenTools = {
   getRuneStats: {
     displayName: '📊 Rune Stats',
     description:
-      'Get detailed statistics for a Magic Eden rune including floor price, listed count, owners, and total volume.',
+      'Get detailed statistics for a rune including floor price, listed count, owners, and total volume.',
     parameters: z.object({
       symbol: z.string().describe('The rune name/symbol to check'),
     }),
@@ -859,7 +859,7 @@ export const magicEdenTools = {
   getPopularRunes: {
     displayName: '🔥 Popular Runes',
     description:
-      'Get the most popular runes on Magic Eden based on volume and activity.',
+      'Get the most popular runes on volume and activity.',
     parameters: z.object({
       timeRange: z
         .enum(['1h', '1d', '7d', '30d'])

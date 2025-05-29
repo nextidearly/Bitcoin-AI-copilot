@@ -43,10 +43,7 @@ export function ToolResult({ toolName, result, header }: ToolResultProps) {
   if (!isCollapsible) {
     return (
       <div className="mt-2 w-full">
-        <div className="w-full rounded-lg bg-muted/40 px-3 py-2">
-          {headerContent}
-        </div>
-        <div className="mt-2 text-sm sm:px-4 sm:text-base">{content}</div>
+        <div className="mt-2 text-sm sm:text-base">{content}</div>
       </div>
     );
   }

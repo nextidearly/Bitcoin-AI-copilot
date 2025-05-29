@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { verifyUser } from '@/server/actions/user';
 import {
-  dbGetConversation,
   dbGetConversationMessages,
 } from '@/server/db/queries';
 

@@ -189,7 +189,7 @@ export function HomeContent() {
     >
       <div
         className="mb-12 text-center text-xl font-semibold tracking-tight md:text-4xl lg:text-4xl"
-      >How can I help with?</div>
+      >What can I help with?</div>
 
       <div className="mx-auto w-full max-w-3xl space-y-4">
         <BlurFade delay={0.1}>

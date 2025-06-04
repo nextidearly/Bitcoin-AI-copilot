@@ -52,10 +52,10 @@ export async function POST(req: Request) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  // if (!publicKey) {
-  //   console.error('[chat/route] No public key found');
-  //   return new Response('No public key found', { status: 400 });
-  // }
+  if (!publicKey) {
+    console.error('[chat/route] No public key found');
+    return new Response('No public key found', { status: 400 });
+  }
 
   try {
     // Get the (newest) message sent to the API

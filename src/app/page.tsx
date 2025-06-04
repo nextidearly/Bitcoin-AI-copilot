@@ -40,6 +40,12 @@ export default function Home() {
       loginMethod,
       loginAccount,
     ) => {
+      console.log(user,
+        isNewUser,
+        wasAlreadyAuthenticated,
+        loginMethod,
+        loginAccount,);
+
       router.push('/home');
     },
   });

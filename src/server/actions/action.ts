@@ -24,7 +24,6 @@ import {
 } from '@/server/db/queries';
 import { ActionWithUser } from '@/types/db';
 
-import { retrieveAgentKitServer } from '../utils';
 import { getToolsFromOrchestrator } from './orchestrator';
 
 const ACTION_PAUSE_THRESHOLD = 3;
@@ -78,10 +77,6 @@ export async function processAction(action: ActionWithUser) {
         ],
         true,
       );
-    const agent = await retrieveAgentKitServer({
-      userId: action.user.id,
-      walletId: activeWallet.id,
-    });
 
     console.log('toolsRequired', toolsRequired);
 
@@ -110,7 +105,6 @@ export async function processAction(action: ActionWithUser) {
       const tool = clonedTools[toolName as keyof typeof clonedTools];
       clonedTools[toolName as keyof typeof clonedTools] = {
         ...tool,
-        agentKit: agent.data?.agent,
         userId: action.userId,
       };
     }
@@ -146,7 +140,7 @@ export async function processAction(action: ActionWithUser) {
           schema: tool.parameters as z.ZodType<any>,
           prompt: [
             `The model tried to call the tool "${toolCall.toolName}"` +
-              ` with the following arguments:`,
+            ` with the following arguments:`,
             JSON.stringify(toolCall.args),
             `The tool accepts the following schema:`,
             JSON.stringify(parameterSchema(toolCall)),

@@ -5,12 +5,10 @@ import { cookies } from 'next/headers';
 
 import { PrivyClient } from '@privy-io/server-auth';
 import { WalletWithMetadata } from '@privy-io/server-auth';
-import { customAlphabet } from 'nanoid';
 import { z } from 'zod';
 
 import prisma from '@/lib/prisma';
 import { ActionResponse, actionClient } from '@/lib/safe-action';
-import { generateEncryptedKeyPair } from '@/lib/solana/wallet-generator';
 import { EmbeddedWallet, PrismaUser } from '@/types/db';
 
 const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
@@ -31,105 +29,18 @@ const PRIVY_SERVER_CLIENT = new PrivyClient(PRIVY_APP_ID, PRIVY_APP_SECRET, {
 
 const getOrCreateUser = actionClient
   .schema(z.object({ userId: z.string() }))
-  .action<ActionResponse<PrismaUser>>(async ({ parsedInput: { userId } }) => {
-    const generateReferralCode = async (): Promise<string> => {
-      const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890', 8); // 8-character alphanumeric
-
-      const MAX_ATTEMPTS = 10; // Limit to prevent infinite loops
-      let attempts = 0;
-
-      while (attempts < MAX_ATTEMPTS) {
-        const referralCode = nanoid();
-
-        
-        const existingCode = await prisma.user.findUnique({
-          where: { referralCode },
-        });
-
-        if (!existingCode) {
-          return referralCode; // Return the unique code
-        }
-
-        attempts++;
-      }
-
-      // Failsafe: throw an error if a unique code couldn't be generated
-      throw new Error(
-        'Unable to generate a unique referral code after 10 attempts',
-      );
-    };
-
+  .action<ActionResponse<any>>(async ({ parsedInput: { userId } }) => {
     const existingUser = await prisma.user.findUnique({
       where: { privyId: userId },
-      include: {
-        wallets: {
-          select: {
-            id: true,
-            ownerId: true,
-            name: true,
-            publicKey: true,
-            walletSource: true,
-            delegated: true,
-            active: true,
-            chain: true,
-          },
-          where: {
-            active: true,
-          },
-        },
-        subscription: {
-          include: {
-            payments: true,
-          },
-        },
-      },
     });
 
     if (existingUser) {
-      // If the user exists but doesn't have a referralCode, generate one
-      if (!existingUser.referralCode) {
-        const referralCode = await generateReferralCode();
-        await prisma.user.update({
-          where: { id: existingUser.id },
-          data: { referralCode },
-        });
-        existingUser.referralCode = referralCode;
-      }
       return { success: true, data: existingUser };
     }
 
-    // Look up referralCode from cookie
-    const cookieReferralCode = (await cookies()).get('referralCode')?.value;
-    let referringUserId: string | null = null;
-
-    if (cookieReferralCode) {
-      const referringUser = await prisma.user.findUnique({
-        where: { referralCode: cookieReferralCode },
-        select: { id: true },
-      });
-
-      if (referringUser) {
-        referringUserId = referringUser.id;
-      }
-    }
-
-    // Create a new user if none exists
-    const referralCode = await generateReferralCode();
     const createdUser = await prisma.user.create({
       data: {
         privyId: userId,
-        referralCode,
-        referringUserId,
-      },
-    });
-
-    const { publicKey, encryptedPrivateKey } = await generateEncryptedKeyPair();
-    const initialWallet = await prisma.wallet.create({
-      data: {
-        ownerId: createdUser.id,
-        name: 'Default',
-        publicKey,
-        encryptedPrivateKey,
       },
     });
 
@@ -137,18 +48,6 @@ const getOrCreateUser = actionClient
       success: true,
       data: {
         ...createdUser,
-        wallets: [
-          {
-            id: initialWallet.id,
-            ownerId: initialWallet.ownerId,
-            name: initialWallet.name,
-            publicKey: initialWallet.publicKey,
-            walletSource: initialWallet.walletSource,
-            delegated: initialWallet.delegated,
-            active: initialWallet.active,
-            chain: initialWallet.chain,
-          },
-        ],
         subscription: null,
       },
     };

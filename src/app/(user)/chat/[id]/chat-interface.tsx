@@ -15,31 +15,22 @@ import { SavedPrompt } from '@prisma/client';
 import { Attachment, JSONValue, Message } from 'ai';
 import { useChat } from 'ai/react';
 import {
-  Bookmark,
   Image as ImageIcon,
   X,
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
-import { toast } from 'sonner';
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 
 import { getToolConfig } from '@/ai/providers';
 import { Confirmation } from '@/components/confimation';
-import { FloatingWallet } from '@/components/floating-wallet';
-import Logo from '@/components/logo';
 import { ToolResult } from '@/components/message/tool-result';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import usePolling from '@/hooks/use-polling';
-import { useUser } from '@/hooks/use-user';
 import { useWalletPortfolio } from '@/hooks/use-wallet-portfolio';
 import { EVENTS } from '@/lib/events';
 import { cn } from '@/lib/utils';
-import {
-  createSavedPrompt,
-} from '@/server/actions/saved-prompt';
 import { type ToolActionResult, ToolUpdate } from '@/types/util';
 
 import { ConversationInput } from '../../home/conversation-input';

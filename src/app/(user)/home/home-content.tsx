@@ -14,12 +14,9 @@ import ChatInterface from '@/app/(user)/chat/[id]/chat-interface';
 import { SavedPromptsMenu } from '@/components/saved-prompts-menu';
 import { useConversations } from '@/hooks/use-conversations';
 import { useUser } from '@/hooks/use-user';
-import { useWalletPortfolio } from '@/hooks/use-wallet-portfolio';
 import { EVENTS } from '@/lib/events';
 import {
-  IS_TRIAL_ENABLED,
   cn,
-  getTrialTokensFloat,
 } from '@/lib/utils';
 import {
   setSavedPromptLastUsedAt,
@@ -137,33 +134,10 @@ export function HomeContent() {
       console.error('Failed to update -lastUsedAt- for prompt:', { error });
     }
   }
-  const hasEAP = user?.earlyAccess === true;
 
-  const shouldCheckPortfolio =
-    IS_TRIAL_ENABLED && !hasEAP && !user?.subscription?.active;
-
-  const { data: portfolio, isLoading: isPortfolioLoading } =
-    useWalletPortfolio();
-
-  // Check if user meets the minimum token balance
-  const meetsTokenBalance = useMemo(() => {
-    if (!portfolio || !portfolio.tokens) return false;
-
-    // Find the BITX token
-    const bitxToken = portfolio.tokens.find(
-      (token) => token.mint === process.env.NEXT_PUBLIC_BITX_MINT,
-    );
-
-    // Check the balance
-    const balance = bitxToken?.balance || 0;
-
-    const trialMinBalance = getTrialTokensFloat();
-
-    return trialMinBalance && balance >= trialMinBalance;
-  }, [portfolio]);
 
   // Handle loading states
-  if (isUserLoading || (shouldCheckPortfolio && isPortfolioLoading)) {
+  if (isUserLoading) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -171,20 +145,12 @@ export function HomeContent() {
     );
   }
 
-  const USER_HAS_TRIAL =
-    IS_TRIAL_ENABLED &&
-    !hasEAP &&
-    !user?.subscription?.active &&
-    meetsTokenBalance;
-
-  const USER_HAS_ACCESS =
-    hasEAP || user?.subscription?.active || USER_HAS_TRIAL;
 
   const mainContent = (
     <div
       className={cn(
         'mx-auto flex w-full max-w-6xl flex-1 flex-col items-center justify-center px-6',
-        !USER_HAS_ACCESS ? 'h-screen py-0' : 'py-12',
+        'h-screen py-0',
       )}
     >
       <div

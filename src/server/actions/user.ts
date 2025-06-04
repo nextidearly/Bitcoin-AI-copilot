@@ -4,12 +4,11 @@ import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
 import { PrivyClient } from '@privy-io/server-auth';
-import { WalletWithMetadata } from '@privy-io/server-auth';
 import { z } from 'zod';
 
 import prisma from '@/lib/prisma';
 import { ActionResponse, actionClient } from '@/lib/safe-action';
-import { EmbeddedWallet, PrismaUser } from '@/types/db';
+import { PrismaUser } from '@/types/db';
 
 const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
 const PRIVY_APP_SECRET = process.env.PRIVY_APP_SECRET;
@@ -100,7 +99,6 @@ export const verifyUser = actionClient.action<
       data: {
         id: user.id,
         privyId: user.privyId,
-        publicKey: user.wallets[0]?.publicKey,
         degenMode: user.degenMode,
       },
     };
@@ -139,75 +137,6 @@ export const getUserData = actionClient.action<ActionResponse<PrismaUser>>(
   },
 );
 
-export const syncEmbeddedWallets = actionClient.action<
-  ActionResponse<{ wallets: EmbeddedWallet[] }>
->(async () => {
-  const response = await getUserData();
-  if (!response?.data?.success || !response.data?.data) {
-    return { success: false, error: 'Local user not found in DB' };
-  }
-
-  const userData = response.data.data;
-
-  const privyUser = await PRIVY_SERVER_CLIENT.getUser(userData.privyId);
-
-  const embeddedWallets = privyUser.linkedAccounts.filter(
-    (acct): acct is WalletWithMetadata =>
-      acct.type === 'wallet' && acct.walletClientType === 'privy',
-  );
-
-  try {
-    for (const w of embeddedWallets) {
-      const pubkey = w.address;
-      if (!pubkey) continue;
-
-      await prisma.wallet.upsert({
-        where: {
-          ownerId_publicKey: {
-            ownerId: userData.id,
-            publicKey: pubkey,
-          },
-        },
-        update: {
-          name: 'Privy Embedded',
-          walletSource: 'PRIVY',
-          delegated: w.delegated ?? false,
-          publicKey: pubkey,
-          encryptedPrivateKey: undefined, // This will handle a case where a user imports a wallet to privy
-        },
-        create: {
-          ownerId: userData.id,
-          name: 'Privy Embedded',
-          publicKey: pubkey,
-          walletSource: 'PRIVY',
-          chain: 'SOLANA',
-          delegated: w.delegated ?? false,
-          active: false,
-          encryptedPrivateKey: undefined,
-        },
-      });
-    }
-  } catch (error) {
-    return { success: false, error: 'Error retrieving updated user' };
-  }
-
-  const userWallets = await prisma.wallet.findMany({
-    where: { ownerId: userData.id },
-    select: {
-      id: true,
-      publicKey: true,
-      walletSource: true,
-      delegated: true,
-      name: true,
-      ownerId: true,
-      active: true,
-      chain: true,
-    },
-  });
-
-  return { success: true, data: { wallets: userWallets } };
-});
-
 export const getPrivyClient = actionClient.action(
   async () => PRIVY_SERVER_CLIENT,
 );
@@ -216,6 +145,7 @@ export type UserUpdateData = {
   degenMode?: boolean;
   referralCode?: string; // Add referralCode as an optional field
 };
+
 export async function updateUser(data: UserUpdateData) {
   try {
     const authResult = await verifyUser();

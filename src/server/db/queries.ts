@@ -1,6 +1,5 @@
 import { Action, Prisma, Message as PrismaMessage } from '@prisma/client';
 import { JsonValue } from '@prisma/client/runtime/library';
-import { tool } from 'ai';
 import _ from 'lodash';
 
 import prisma from '@/lib/prisma';

@@ -39,13 +39,14 @@ export default function Home() {
       wasAlreadyAuthenticated,
       loginMethod,
       loginAccount,
+
     ) => {
-      console.log(user,
+      console.log(
+        user,
         isNewUser,
         wasAlreadyAuthenticated,
         loginMethod,
         loginAccount,);
-
       router.push('/home');
     },
   });

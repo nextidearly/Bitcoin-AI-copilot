@@ -1,13 +1,5 @@
 import { z } from 'zod';
 
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { type ToolActionResult } from '@/types/util';
-
-interface ConfirmDenyProps {
-  message: string;
-}
-
 export const utilTools = {
   askForConfirmation: {
     displayName: '⚠️ Confirmation',

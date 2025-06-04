@@ -28,7 +28,6 @@ import { getToolConfig } from '@/ai/providers';
 import { Confirmation } from '@/components/confimation';
 import { ToolResult } from '@/components/message/tool-result';
 import usePolling from '@/hooks/use-polling';
-import { useWalletPortfolio } from '@/hooks/use-wallet-portfolio';
 import { EVENTS } from '@/lib/events';
 import { cn } from '@/lib/utils';
 import { type ToolActionResult, ToolUpdate } from '@/types/util';
@@ -552,9 +551,6 @@ export default function ChatInterface({
       if (window.location.pathname === `/chat/${id}`) {
         window.history.replaceState({}, '', `/chat/${id}`);
       }
-      // Refresh wallet portfolio after AI response
-      refresh();
-
       // Dispatch event to mark conversation as read
       window.dispatchEvent(new CustomEvent(EVENTS.CONVERSATION_READ));
     },
@@ -596,11 +592,6 @@ export default function ChatInterface({
   const [previewImage, setPreviewImage] = useState<ImagePreview | null>(null);
   const [savedPrompts, setSavedPrompts] = useState<SavedPrompt[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const {
-    data: portfolio,
-    isLoading: isPortfolioLoading,
-    refresh,
-  } = useWalletPortfolio();
 
   const scrollToBottom = useCallback(() => {
     if (messagesEndRef.current) {

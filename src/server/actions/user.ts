@@ -99,6 +99,7 @@ export const verifyUser = actionClient.action<
       data: {
         id: user.id,
         privyId: user.privyId,
+        publicKey: user.wallets[0]?.publicKey,
         degenMode: user.degenMode,
       },
     };

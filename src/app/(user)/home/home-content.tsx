@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { SavedPrompt } from '@prisma/client';
 import { Attachment, JSONValue } from 'ai';
 import { useChat } from 'ai/react';
-import { ChartColumn, Code, FileText, Lightbulb, Loader2, PenLine, SquareTerminal } from 'lucide-react';
+import { ChartColumn, FileText, Lightbulb, Loader2, PenLine, SquareTerminal } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 import ChatInterface from '@/app/(user)/chat/[id]/chat-interface';

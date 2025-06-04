@@ -266,31 +266,32 @@ export const AppSidebarConversations = () => {
         </div>
         <CollapsibleContent className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
           <SidebarGroupContent className="group-data-[collapsible=icon]:hidden">
-            {isConversationsLoading ? (
-              <div className="flex items-center justify-center">
-                <Loader2 className="mt-4 h-4 w-4 animate-spin" />
-              </div>
-            ) : !conversations?.length ? (
-              <p className="ml-2 text-xs text-muted-foreground">
-                No conversations
-              </p>
-            ) : (
-              <SidebarMenu>
-                {conversations.map((conversation: Conversation) => (
-                  <ConversationMenuItem
-                    key={conversation.id}
-                    id={conversation.id}
-                    title={conversation.title}
-                    active={conversation.id === activeId}
-                    onDelete={deleteConversation}
-                    onRename={renameConversation}
-                    lastMessageAt={conversation.lastMessageAt}
-                    lastReadAt={conversation.lastReadAt}
-                    onMarkAsRead={handleMarkAsRead}
-                  />
-                ))}
-              </SidebarMenu>
-            )}
+            {
+              !isConversationsLoading && <>
+                {
+                  !conversations?.length ? (
+                    <p className="ml-2 text-xs text-muted-foreground">
+                      No conversations
+                    </p>
+                  ) : (
+                    <SidebarMenu>
+                      {conversations.map((conversation: Conversation) => (
+                        <ConversationMenuItem
+                          key={conversation.id}
+                          id={conversation.id}
+                          title={conversation.title}
+                          active={conversation.id === activeId}
+                          onDelete={deleteConversation}
+                          onRename={renameConversation}
+                          lastMessageAt={conversation.lastMessageAt}
+                          lastReadAt={conversation.lastReadAt}
+                          onMarkAsRead={handleMarkAsRead}
+                        />
+                      ))}
+                    </SidebarMenu>
+                  )}</>
+            }
+
           </SidebarGroupContent>
         </CollapsibleContent>
       </Collapsible>

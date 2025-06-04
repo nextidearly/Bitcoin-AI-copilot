@@ -26,7 +26,7 @@ const AppSidebarHeader = () => {
   return (
     <SidebarHeader>
       <div className="flex items-center justify-between px-1">
-        <Logo width={28} height={28} className='rounded-md' />
+        <Logo width={24} height={24} className='rounded-md' />
 
         <div className="flex items-center gap-1.5">
           <ThemeToggle />

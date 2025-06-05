@@ -8,7 +8,7 @@ import { PrivyInterface, usePrivy } from '@privy-io/react-auth';
 import useSWR from 'swr';
 
 import { debugLog } from '@/lib/debug';
-import { getUserData } from '@/server/actions/verify-user';
+import { getUserData } from '@/server/actions/user';
 import { BitxUser, PrismaUser, PrivyUser } from '@/types/db';
 import Cookies from 'js-cookie';
 

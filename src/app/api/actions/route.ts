@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { verifyUser } from '@/server/actions/user';
+import { verifyUser } from '@/server/actions/verify-user';
 import { dbGetUserActions } from '@/server/db/queries';
 
 export async function GET(req: NextRequest) {

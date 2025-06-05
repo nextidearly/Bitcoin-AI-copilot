@@ -9,6 +9,7 @@ import { z } from 'zod';
 import prisma from '@/lib/prisma';
 import { ActionResponse, actionClient } from '@/lib/safe-action';
 import { PrismaUser } from '@/types/db';
+import { verifyUser } from '@/server/actions/verify-user';
 
 const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
 const PRIVY_APP_SECRET = process.env.PRIVY_APP_SECRET;
@@ -52,61 +53,6 @@ const getOrCreateUser = actionClient
     };
   });
 
-export const verifyUser = actionClient.action<
-  ActionResponse<{
-    id: string;
-    degenMode: boolean;
-    publicKey?: string;
-    privyId: string;
-  }>
->(async () => {
-  const token = (await cookies()).get('privy-token')?.value;
-  if (!token) {
-    return {
-      success: false,
-      error: 'No privy token found',
-    };
-  }
-
-  try {
-    const claims = await PRIVY_SERVER_CLIENT.verifyAuthToken(token);
-    const user = await prisma.user.findUnique({
-      where: { privyId: claims.userId },
-      select: {
-        id: true,
-        degenMode: true,
-        privyId: true,
-        wallets: {
-          select: {
-            publicKey: true,
-          },
-          where: {
-            active: true,
-          },
-        },
-      },
-    });
-
-    if (!user) {
-      return {
-        success: false,
-        error: 'User not found',
-      };
-    }
-
-    return {
-      success: true,
-      data: {
-        id: user.id,
-        privyId: user.privyId,
-        publicKey: user.wallets[0]?.publicKey,
-        degenMode: user.degenMode,
-      },
-    };
-  } catch {
-    return { success: false, error: 'Authentication failed' };
-  }
-});
 
 export const getUserData = actionClient.action<ActionResponse<PrismaUser>>(
   async () => {

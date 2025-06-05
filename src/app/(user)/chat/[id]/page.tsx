@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { verifyUser } from '@/server/actions/user';
+import { verifyUser } from '@/server/actions/verify-user';
 import {
   dbGetConversation,
   dbGetConversationMessages,

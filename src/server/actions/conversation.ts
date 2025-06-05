@@ -5,8 +5,8 @@ import { z } from 'zod';
 
 import prisma from '@/lib/prisma';
 import { ActionResponse, actionClient } from '@/lib/safe-action';
+import { verifyUser } from '@/server/actions/verify-user';
 
-import { verifyUser } from './user';
 
 export const markConversationAsRead = actionClient
   .schema(z.object({ id: z.string() }))

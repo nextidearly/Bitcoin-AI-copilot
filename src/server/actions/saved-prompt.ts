@@ -13,7 +13,7 @@ import {
   dbUpdateSavedPromptIsFavorite,
   dbUpdateSavedPromptLastUsedAt,
 } from '../db/queries';
-import { verifyUser } from './user';
+import { verifyUser } from '@/server/actions/verify-user';
 
 export const createSavedPrompt = actionClient
   .schema(z.object({ title: z.string(), content: z.string() }))

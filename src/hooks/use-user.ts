@@ -10,6 +10,7 @@ import useSWR from 'swr';
 import { debugLog } from '@/lib/debug';
 import { getUserData } from '@/server/actions/user';
 import { BitxUser, PrismaUser, PrivyUser } from '@/types/db';
+import Cookies from 'js-cookie';
 
 /**
  * Extended interface for BitxUser that includes Privy functionality
@@ -24,7 +25,7 @@ type BitxUserInterface = Omit<PrivyInterface, 'user' | 'ready'> & {
  * Loads cached BitxUser data from localStorage
  * @returns {BitxUser | null} Cached user data or null if not found/invalid
  */
-function loadFromCache(): BitxUser | null {
+export function loadFromCache(): BitxUser | null {
   try {
     const cached = localStorage.getItem('bitx-user-data');
     if (cached) {
@@ -56,12 +57,14 @@ function saveToCache(data: BitxUser | null) {
   try {
     if (data) {
       localStorage.setItem('bitx-user-data', JSON.stringify(data));
+      Cookies.set('bitx-user-data', JSON.stringify(data));
       debugLog('User data saved to cache', data, {
         module: 'useUser',
         level: 'info',
       });
     } else {
       localStorage.removeItem('bitx-user-data');
+      Cookies.remove('bitx-user-data');
       debugLog('User data removed from cache', null, {
         module: 'useUser',
         level: 'info',

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { verifyUser } from '@/server/actions/user';
 import {
   dbGetConversationMessages,
 } from '@/server/db/queries';
+import { verifyUser } from '@/server/actions/verify-user';
 
 export async function GET(
   req: NextRequest,
@@ -11,15 +11,9 @@ export async function GET(
 ) {
   const session = await verifyUser();
   const userId = session?.data?.data?.id;
-  const publicKey = session?.data?.data?.publicKey;
 
   if (!userId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  if (!publicKey) {
-    console.error('[chat/route] No public key found');
-    return NextResponse.json({ error: 'No public key found' }, { status: 400 });
   }
 
   const { conversationId } = await params;

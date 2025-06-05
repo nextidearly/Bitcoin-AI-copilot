@@ -3,8 +3,8 @@ import { z } from 'zod';
 import { ActionEmitter } from '@/components/action-emitter';
 import { Card } from '@/components/ui/card';
 import { NO_CONFIRMATION_MESSAGE } from '@/lib/constants';
-import { verifyUser } from '@/server/actions/user';
 import { dbCreateAction } from '@/server/db/queries';
+import { verifyUser } from '@/server/actions/verify-user';
 
 interface CreateActionResultProps {
   id: string;

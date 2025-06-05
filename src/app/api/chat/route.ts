@@ -28,7 +28,6 @@ import {
 } from '@/lib/utils/ai';
 import { generateTitleFromUserMessage } from '@/server/actions/ai';
 import { getToolsFromOrchestrator } from '@/server/actions/orchestrator';
-import { verifyUser } from '@/server/actions/user';
 import {
   dbCreateConversation,
   dbCreateMessages,
@@ -36,6 +35,7 @@ import {
   dbDeleteConversation,
   dbGetConversationMessages,
 } from '@/server/db/queries';
+import { verifyUser } from '@/server/actions/verify-user';
 
 export const maxDuration = 60;
 
@@ -45,16 +45,10 @@ export async function POST(req: Request) {
   // Check for valid user session and required parameters
   const session = await verifyUser();
   const userId = session?.data?.data?.id;
-  const publicKey = session?.data?.data?.publicKey;
   const degenMode = session?.data?.data?.degenMode;
 
   if (!userId) {
     return new Response('Unauthorized', { status: 401 });
-  }
-
-  if (!publicKey) {
-    console.error('[chat/route] No public key found');
-    return new Response('No public key found', { status: 400 });
   }
 
   try {

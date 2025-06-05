@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { verifyUser } from '@/server/actions/user';
 import { dbGetConversations } from '@/server/db/queries';
+import { verifyUser } from '@/server/actions/verify-user';
 
 export async function GET(req: NextRequest) {
   try {
     const session = await verifyUser();
+
     const userId = session?.data?.data?.id;
 
     if (!userId) {

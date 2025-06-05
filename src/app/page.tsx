@@ -33,20 +33,7 @@ export default function Home() {
   const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true';
   const router = useRouter();
   let { login } = useLogin({
-    onComplete: async (
-      user,
-      isNewUser,
-      wasAlreadyAuthenticated,
-      loginMethod,
-      loginAccount,
-
-    ) => {
-      console.log(
-        user,
-        isNewUser,
-        wasAlreadyAuthenticated,
-        loginMethod,
-        loginAccount,);
+    onComplete: async () => {
       router.push('/home');
     },
   });

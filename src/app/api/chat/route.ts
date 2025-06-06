@@ -37,7 +37,7 @@ import {
 } from '@/server/db/queries';
 import { verifyUser } from '@/server/actions/verify-user';
 
-export const maxDuration = 60;
+export const maxDuration = 50;
 
 export async function POST(req: Request) {
   const startTime = performance.now();

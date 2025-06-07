@@ -20,7 +20,7 @@ const Hero = ({ handleLogin }: { handleLogin: () => void }) => {
               onClick={handleLogin}
               className="h-12 min-w-[180px] text-base transition-all duration-300 hover:scale-105"
             >
-              Getting Started
+              Login
             </Button>
           </div>
         </div>

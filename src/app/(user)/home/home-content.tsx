@@ -39,7 +39,7 @@ function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, is
   const twitter = privyUser?.twitter;
   const twitterProfileImage = twitter?.profilePictureUrl;
 
-  let { login } = useLogin({
+  const { login } = useLogin({
     onComplete: async () => {
       router.push('/home');
     },

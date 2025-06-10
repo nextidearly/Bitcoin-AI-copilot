@@ -38,7 +38,6 @@ import { type ToolActionResult, ToolUpdate } from '@/types/util';
 
 import { ConversationInput } from '../../home/conversation-input';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { ChatBubbleIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import { useLogin } from '@privy-io/react-auth';
 import { BitxUser } from '@/types/db';
@@ -163,7 +162,7 @@ function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, is
   const twitter = privyUser?.twitter;
   const twitterProfileImage = twitter?.profilePictureUrl;
 
-  let { login } = useLogin({
+  const { login } = useLogin({
     onComplete: async () => {
       router.push('/home');
     },

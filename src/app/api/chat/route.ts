@@ -17,21 +17,18 @@ import {
   defaultModel,
   defaultSystemPrompt,
   defaultTools,
-  getToolsFromRequiredTools,
 } from '@/ai/providers';
 import { MAX_TOKEN_MESSAGES } from '@/lib/constants';
-import { isValidTokenUsage, logWithTiming } from '@/lib/utils';
+import { logWithTiming } from '@/lib/utils';
 import {
   getConfirmationResult,
   getUnconfirmedConfirmationMessage,
   handleConfirmation,
 } from '@/lib/utils/ai';
 import { generateTitleFromUserMessage } from '@/server/actions/ai';
-import { getToolsFromOrchestrator } from '@/server/actions/orchestrator';
 import {
   dbCreateConversation,
   dbCreateMessages,
-  dbCreateTokenStat,
   dbDeleteConversation,
   dbGetConversationMessages,
 } from '@/server/db/queries';
@@ -78,34 +75,6 @@ export async function POST(req: Request) {
         await dbCreateConversation({ conversationId, userId, title });
         revalidatePath('/api/conversations');
       }
-
-      // Create a new user message in the DB if the current message is from the user
-      const newUserMessage =
-        message.role === 'user'
-          ? await dbCreateMessages({
-            messages: [
-              {
-                conversationId,
-                role: 'user',
-                content: message.content,
-                toolInvocations: [],
-                experimental_attachments: message.experimental_attachments
-                  ? JSON.parse(JSON.stringify(message.experimental_attachments))
-                  : undefined,
-              },
-            ],
-          })
-          : null;
-
-      // Check if there is an unconfirmed confirmation message that we need to handle
-      const unconfirmed = getUnconfirmedConfirmationMessage(existingMessages);
-
-      // Handle the confirmation message if it exists
-      const { confirmationHandled, updates } = await handleConfirmation({
-        current: message,
-        unconfirmed,
-      });
-      logWithTiming(startTime, '[chat/route] handleConfirmation completed');
 
       // Build the system prompt and append the history of attachments
       const attachments = existingMessages
@@ -158,35 +127,11 @@ export async function POST(req: Request) {
             });
           }
 
-          // Write any updates to the data stream (e.g. tool updates)
-          if (updates.length) {
-            updates.forEach((u) => dataStream.writeData(u));
-          }
-
-          // Exclude the confirmation tool if we are handling a confirmation
-          const { toolsRequired, usage: orchestratorUsage } =
-            await getToolsFromOrchestrator(
-              relevant,
-              degenMode || confirmationHandled,
-            );
-
-          console.log('toolsRequired', toolsRequired);
-
-          logWithTiming(
-            startTime,
-            '[chat/route] getToolsFromOrchestrator complete',
-          );
-
-          // Get a list of required tools from the orchestrator
-          const tools = toolsRequired
-            ? getToolsFromRequiredTools(toolsRequired)
-            : defaultTools;
-
           // Begin streaming text from the model
           const result = streamText({
             model: defaultModel,
             system: systemPrompt,
-            tools: tools as Record<string, CoreTool<any, any>>,
+            tools: defaultTools as Record<string, CoreTool<any, any>>,
             experimental_toolCallStreaming: true,
             experimental_telemetry: {
               isEnabled: true,
@@ -222,7 +167,7 @@ export async function POST(req: Request) {
             experimental_transform: smoothStream(),
             maxSteps: 15,
             messages: relevant,
-            async onFinish({ response, usage }) {
+            async onFinish({ response }) {
               if (!userId) return;
               try {
                 logWithTiming(
@@ -250,7 +195,7 @@ export async function POST(req: Request) {
                 });
 
                 // Save the messages to the database
-                const saved = await dbCreateMessages({
+                await dbCreateMessages({
                   messages: finalMessages.map((m) => ({
                     conversationId,
                     createdAt: m.createdAt,
@@ -269,34 +214,6 @@ export async function POST(req: Request) {
                   startTime,
                   '[chat/route] dbCreateMessages complete',
                 );
-
-                // Save the token stats
-                if (saved && newUserMessage && isValidTokenUsage(usage)) {
-                  let { promptTokens, completionTokens, totalTokens } = usage;
-
-                  if (isValidTokenUsage(orchestratorUsage)) {
-                    promptTokens += orchestratorUsage.promptTokens;
-                    completionTokens += orchestratorUsage.completionTokens;
-                    totalTokens += orchestratorUsage.totalTokens;
-                  }
-
-                  const messageIds = [...newUserMessage, ...saved].map(
-                    (m) => m.id,
-                  );
-
-                  await dbCreateTokenStat({
-                    userId,
-                    messageIds,
-                    promptTokens,
-                    completionTokens,
-                    totalTokens,
-                  });
-
-                  logWithTiming(
-                    startTime,
-                    '[chat/route] dbCreateTokenStat complete',
-                  );
-                }
 
                 revalidatePath('/api/conversations');
               } catch (error) {
@@ -348,28 +265,11 @@ export async function POST(req: Request) {
             });
           }
 
-          // Exclude the confirmation tool if we are handling a confirmation
-          const { toolsRequired, usage: orchestratorUsage } =
-            await getToolsFromOrchestrator(
-              relevant,
-              false,
-            );
-
-          logWithTiming(
-            startTime,
-            '[chat/route] getToolsFromOrchestrator complete',
-          );
-
-          //Get a list of required tools from the orchestrator
-          const tools = toolsRequired
-            ? getToolsFromRequiredTools(toolsRequired)
-            : defaultTools;
-
           // Begin streaming text from the model
           const result = streamText({
             model: defaultModel,
             system: systemPrompt,
-            tools: tools as Record<string, CoreTool<any, any>>,
+            tools: defaultTools as Record<string, CoreTool<any, any>>,
             experimental_toolCallStreaming: true,
             experimental_telemetry: {
               isEnabled: true,

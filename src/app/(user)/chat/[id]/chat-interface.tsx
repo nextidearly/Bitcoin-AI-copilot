@@ -155,7 +155,7 @@ const useAnimationEffect = () => {
 };
 
 // Components
-function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, isLoading: boolean, handleLogout: Function }) {
+function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, isLoading: boolean, handleLogout: any }) {
   const router = useRouter();
   const privyUser = user?.privyUser;
 

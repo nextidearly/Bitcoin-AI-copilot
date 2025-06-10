@@ -38,9 +38,12 @@ const AppSidebarHeader = () => {
 
 const AppSidebarFooter = () => {
   return (
-    <SidebarFooter>
-      <AppSidebarUser />
-    </SidebarFooter>
+    <div className='inline-block sm:hidden'>
+      <SidebarFooter>
+        <AppSidebarUser />
+      </SidebarFooter>
+    </div>
+
   );
 };
 

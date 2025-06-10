@@ -15,7 +15,7 @@ export default async function UserLayout({
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar />
       <main className="w-full">
-        <SidebarTrigger className="absolute z-50 mt-2 md:hidden" />
+        <SidebarTrigger className="absolute z-50 mt-3.5 md:hidden" />
         {children}
       </main>
     </SidebarProvider>

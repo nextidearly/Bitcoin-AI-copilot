@@ -485,7 +485,7 @@ const PopularCollections = ({
     <div className="space-y-1">
       {collections.map((collection, index) => (
         <Card
-          className="space-y-4 bg-muted/50 p-3"
+          className="space-y-4 bg-muted/50 p-3 shadow-none w-full"
           key={collection.collectionId}
         >
           <a
@@ -494,7 +494,7 @@ const PopularCollections = ({
             rel="noopener noreferrer"
             className="block"
           >
-            <div className="flex items-center gap-4">
+            <div className="block sm:flex items-center gap-4">
               <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl">
                 <img
                   src={processImageUrl(collection.image)}
@@ -517,21 +517,21 @@ const PopularCollections = ({
                 </div>
                 <div className="mt-3 flex items-center gap-3 text-sm text-muted-foreground">
                   <span>Floor: {collection.fp} ₿</span>
-                  <span>
+                  <span >
                     Volume {timeRange}: {collection.vol} ₿
                   </span>
-                  <span>
+                  <span className='sm:whitespace-nowrap'>
                     Sales {timeRange}: {collection.txns}
                   </span>
                 </div>
               </div>
-              <div className="relative h-7 shrink-0 overflow-hidden rounded-xl">
+              <div className="relative shrink-0 overflow-hidden rounded-xl">
                 <img
                   src={processImageUrl(
                     `https://stats-mainnet.magiceden.io${collection.fpSparkLinePath}`,
                   )}
                   alt={collection.fpSparkLinePath}
-                  className="h-full w-full object-cover"
+                  className="h-full object-cover w-full sm:w-20"
                   loading="lazy"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = Placeholder.nft();
@@ -556,14 +556,14 @@ const PopularRunes = ({
   return (
     <div className="space-y-1">
       {runes.map((rune, index) => (
-        <Card className="space-y-4 bg-muted/50 p-3" key={rune.rune}>
+        <Card className="space-y-4 bg-muted/50 p-3 shadow-none" key={rune.rune}>
           <a
             href={`https://magiceden.io/runes/${rune.etching.runeName}`}
             target="_blank"
             rel="noopener noreferrer"
             className="block"
           >
-            <div className="flex items-center gap-4">
+            <div className="block sm:flex items-center gap-4">
               <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl">
                 <img
                   src={processImageUrl(rune.imageURI)}
@@ -596,13 +596,13 @@ const PopularRunes = ({
                   </span>
                 </div>
               </div>
-              <div className="relative h-7 shrink-0 overflow-hidden rounded-xl">
+              <div className="relative shrink-0 overflow-hidden rounded-xl">
                 <img
                   src={processImageUrl(
                     `https://stats-mainnet.magiceden.io${rune.unitPriceSparkLinePath}`,
                   )}
                   alt={rune.unitPriceSparkLinePath}
-                  className="h-full w-full object-cover"
+                  className="h-auto w-full object-cover"
                   loading="lazy"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = Placeholder.nft();

@@ -15,7 +15,11 @@ import { SavedPrompt } from '@prisma/client';
 import { Attachment, JSONValue, Message } from 'ai';
 import { useChat } from 'ai/react';
 import {
+  Check,
+  ChevronDown,
   Image as ImageIcon,
+  LogOut,
+  User,
   X,
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -33,6 +37,14 @@ import { cn } from '@/lib/utils';
 import { type ToolActionResult, ToolUpdate } from '@/types/util';
 
 import { ConversationInput } from '../../home/conversation-input';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { ChatBubbleIcon } from '@radix-ui/react-icons';
+import { useRouter } from 'next/navigation';
+import { useLogin } from '@privy-io/react-auth';
+import { BitxUser } from '@/types/db';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { useUser } from '@/hooks/use-user';
 
 // Types
 interface UploadingImage extends Attachment {
@@ -65,11 +77,6 @@ interface ChatMessageProps {
   setSavedPrompts: React.Dispatch<SetStateAction<SavedPrompt[]>>;
   onPreviewImage: (preview: ImagePreview) => void;
   addToolResult: (result: ToolResult) => void;
-}
-
-interface AttachmentPreviewProps {
-  attachment: UploadingImage;
-  onRemove: () => void;
 }
 
 interface ImagePreviewDialogProps {
@@ -148,6 +155,77 @@ const useAnimationEffect = () => {
 };
 
 // Components
+function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, isLoading: boolean, handleLogout: Function }) {
+  const router = useRouter();
+  const privyUser = user?.privyUser;
+
+  const label = privyUser?.email?.address;
+  const twitter = privyUser?.twitter;
+  const twitterProfileImage = twitter?.profilePictureUrl;
+
+  let { login } = useLogin({
+    onComplete: async () => {
+      router.push('/home');
+    },
+  });
+
+  if (isLoading || !user) {
+    return <></>;
+  }
+
+  return <div className='w-full flex justify-end sm:justify-between px-3.5 items-center py-3 sm:pt-2 relative z-40'>
+    <div className='absolute sm:relative left-1/2 sm:left-0 top-1/2 -translate-x-1/2 sm:-translate-x-0 -translate-y-1/2'>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <div className='flex gap-1 items-center hover:bg-muted py-2 px-3 rounded-lg cursor-pointer'>
+            <span className='text-lg'>ORD-GPT</span>
+            <ChevronDown size={18} className='text-gray-400' />
+          </div>
+
+        </DropdownMenuTrigger>
+        <DropdownMenuContent side="bottom" align="start" className='min-w-56 p-2 rounded-lg gap-0'>
+          <DropdownMenuItem className='cursor-pointer w-full p-0'>
+            <div className='rounded-lg hover:bg-muted w-full p-2 flex justify-between items-center'>
+              <span>ORD-GPT</span>
+              <Check size={18} />
+            </div>
+          </DropdownMenuItem>
+          <DropdownMenuItem className='w-full p-0 cursor-not-allowed text-gray-400'>
+            <div className='rounded-lg hover:bg-muted w-full p-2'>Bitcoin-GPT</div>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+
+    {
+      privyUser ? <div className='flex gap-2 items-center'>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Avatar className="h-8 w-8 rounded-lg cursor-pointer">
+              <AvatarImage src={twitterProfileImage || undefined} />
+              <AvatarFallback className="rounded-full bg-muted">
+                <span className='uppercase font-semibold'>{label?.substring(0, 1)}</span>
+              </AvatarFallback>
+            </Avatar>
+
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="bottom" align="end" className='min-w-56 p-2 rounded-lg gap-0'>
+            <DropdownMenuItem className='p-2 w-full cursor-pointer flex gap-1 items-center'>
+              <User />
+              <span>{label}</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className='p-2 w-full cursor-pointer flex gap-1 items-center' onClick={() => handleLogout()}>
+              <LogOut />
+              <span>Logout</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+      </div> : <Button onClick={login} className='rounded-full'>Login</Button>
+    }
+  </div>
+}
+
 function MessageAttachments({
   attachments,
   messageId,
@@ -280,8 +358,6 @@ function MessageToolInvocations({
             );
           }
 
-          const finalDisplayName = displayName || config?.displayName;
-
           return (
             <div key={toolCallId} className="group">
               {isCompleted ? (
@@ -334,7 +410,7 @@ function ChatMessage({
         index === 0 && 'mt-0',
       )}
     >
-      <div className="group relative flex max-w-[85%] flex-row items-center">
+      <div className="group relative flex sm:max-w-[85%] flex-row items-center">
         <div
           className={cn('relative gap-2', isUser ? 'items-end' : 'items-start')}
         >
@@ -353,8 +429,8 @@ function ChatMessage({
           {message.content && (
             <div
               className={cn(
-                'relative flex flex-col gap-2 rounded-2xl px-4 py-1 text-sm',
-                isUser ? 'bg-muted' : '',
+                'relative flex flex-col gap-2 rounded-2xl py-1 text-sm',
+                isUser ? 'bg-muted px-4' : 'px-0',
               )}
             >
               <div
@@ -511,7 +587,7 @@ function ImagePreviewDialog({
 function LoadingMessage() {
   return (
     <div className="flex w-full items-start gap-3">
-      <div className="relative flex max-w-[85%] flex-col items-start gap-2">
+      <div className="relative flex sm:max-w-[85%] flex-col items-start gap-2">
         <div className="relative flex flex-col gap-2 rounded-2xl text-sm">
           <div className="flex items-center gap-1">
             <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-foreground/50 [animation-delay:-0.3s]" />
@@ -561,6 +637,7 @@ export default function ChatInterface({
       } as unknown as JSONValue;
     },
   });
+  const { user, isLoading: isUserLoading, logout } = useUser();
 
   const messages = useMemo(() => {
     const toolUpdates = data as unknown as ToolUpdate[];
@@ -635,6 +712,8 @@ export default function ChatInterface({
 
   return (
     <div className="flex h-full flex-col">
+      <InterfaceHeader user={user as BitxUser} isLoading={isUserLoading} handleLogout={logout} />
+
       <div className="no-scrollbar relative flex-1 overflow-y-auto">
         <div className="mx-auto w-full max-w-3xl">
           <div className="space-y-4 px-4 pb-36 pt-4">

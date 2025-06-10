@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { SavedPrompt } from '@prisma/client';
 import { Attachment, JSONValue } from 'ai';
 import { useChat } from 'ai/react';
-import { ChartColumn, FileText, Lightbulb, Loader2, PenLine, SquareTerminal } from 'lucide-react';
+import { ChartColumn, Check, FileText, Lightbulb, Loader2, PenLine, SquareTerminal, ChevronDown, LogOut, User } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 import ChatInterface from '@/app/(user)/chat/[id]/chat-interface';
@@ -24,13 +24,86 @@ import {
 
 import { ConversationInput } from './conversation-input';
 import BlurFade from '@/components/ui/blur-fade';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { BitxUser } from '@/types/db';
+import { useLogin } from '@privy-io/react-auth';
+import { useRouter } from 'next/navigation';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+
+function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, isLoading: boolean, handleLogout: Function }) {
+  const router = useRouter();
+  const privyUser = user?.privyUser;
+
+  const label = privyUser?.email?.address;
+  const twitter = privyUser?.twitter;
+  const twitterProfileImage = twitter?.profilePictureUrl;
+
+  let { login } = useLogin({
+    onComplete: async () => {
+      router.push('/home');
+    },
+  });
+
+  return <div className='w-full flex justify-end sm:justify-between px-3.5 items-center py-3.5 sm:pt-2 relative z-40'>
+    <div className='absolute sm:relative left-1/2 sm:left-0 top-1/2 -translate-x-1/2 sm:-translate-x-0 -translate-y-1/2 sm:-translate-y-0 '>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <div className='flex gap-1 items-center hover:bg-muted py-2 px-3 rounded-lg cursor-pointer'>
+            <span className='text-lg'>ORD-GPT</span>
+            <ChevronDown size={18} className='text-gray-400' />
+          </div>
+
+        </DropdownMenuTrigger>
+        <DropdownMenuContent side="bottom" align="start" className='min-w-56 p-2 rounded-lg gap-0'>
+          <DropdownMenuItem className='cursor-pointer w-full p-0'>
+            <div className='rounded-lg hover:bg-muted w-full p-2 flex justify-between items-center'>
+              <span>ORD-GPT</span>
+              <Check size={18} />
+            </div>
+          </DropdownMenuItem>
+          <DropdownMenuItem className='w-full p-0 cursor-not-allowed text-gray-400'>
+            <div className='rounded-lg hover:bg-muted w-full p-2'>Bitcoin-GPT</div>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+
+    {
+      privyUser ? <div className='flex gap-2 items-center'>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Avatar className="h-8 w-8 rounded-lg cursor-pointer">
+              <AvatarImage src={twitterProfileImage || undefined} />
+              <AvatarFallback className="rounded-full bg-muted">
+                <span className='uppercase font-semibold'>{label?.substring(0, 1)}</span>
+              </AvatarFallback>
+            </Avatar>
+
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="bottom" align="end" className='min-w-56 p-2 rounded-lg gap-0'>
+            <DropdownMenuItem className='p-2 w-full cursor-pointer flex gap-1 items-center'>
+              <User />
+              <span>{label}</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className='p-2 w-full cursor-pointer flex gap-1 items-center' onClick={() => handleLogout()}>
+              <LogOut />
+              <span>Logout</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+      </div> : <Button onClick={login} className='rounded-full'>Login</Button>
+    }
+  </div>
+}
 
 export function HomeContent() {
   const pathname = usePathname();
   const [savedPrompts, setSavedPrompts] = useState<SavedPrompt[]>([]);
   const [showChat, setShowChat] = useState(false);
   const [chatId, setChatId] = useState(() => uuidv4());
-  const { user, isLoading: isUserLoading } = useUser();
+  const { user, isLoading: isUserLoading, logout } = useUser();
   const [type, setType] = useState('');
 
   const { conversations, refreshConversations } = useConversations(user?.id);
@@ -135,17 +208,6 @@ export function HomeContent() {
     }
   }
 
-
-  // Handle loading states
-  if (isUserLoading) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
-
-
   const mainContent = (
     <div
       className={cn(
@@ -181,49 +243,49 @@ export function HomeContent() {
           <div className='flex flex-wrap gap-3 px-0 sm:px-3 w-full'>
             <button
               onClick={() => setType('analyze')}
-              className={`${type === 'analyze' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+              className={`${type === 'analyze' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
             >
               <ChartColumn size={16} color="#52b7cb" strokeWidth={3} />
               Analyze data
             </button>
             <button
               onClick={() => setType('brainstorm')}
-              className={`${type === 'brainstorm' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+              className={`${type === 'brainstorm' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
             >
               <Lightbulb size={16} color="#e6af19" strokeWidth={3} />
               Brainstorm
             </button>
             <button
               onClick={() => setType('text')}
-              className={`${type === 'text' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+              className={`${type === 'text' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
             >
               <FileText size={16} color="#e17833" strokeWidth={3} />
               Summarize text
             </button>
             <button
               onClick={() => setType('help')}
-              className={`${type === 'help' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+              className={`${type === 'help' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
             >
               <PenLine size={16} color="#c560e1" strokeWidth={3} />
               Help me write
             </button>
             <button
               onClick={() => setType('code')}
-              className={`${type === 'code' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+              className={`${type === 'code' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
             >
               <SquareTerminal size={16} color='#4825a7' strokeWidth={3} />
               Code
             </button>
           </div>
         </BlurFade>
-
       </div>
-
     </div>
   );
 
   return (
     <div className="relative h-screen">
+      <InterfaceHeader user={user as BitxUser} isLoading={isUserLoading} handleLogout={logout} />
+
       {!showChat && (
         <div
           className={cn(

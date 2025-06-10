@@ -22,8 +22,6 @@ import { MAX_TOKEN_MESSAGES } from '@/lib/constants';
 import { logWithTiming } from '@/lib/utils';
 import {
   getConfirmationResult,
-  getUnconfirmedConfirmationMessage,
-  handleConfirmation,
 } from '@/lib/utils/ai';
 import { generateTitleFromUserMessage } from '@/server/actions/ai';
 import {

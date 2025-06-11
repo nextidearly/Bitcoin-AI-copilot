@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { SavedPrompt } from '@prisma/client';
 import { Attachment, JSONValue } from 'ai';
 import { useChat } from 'ai/react';
-import { ChartColumn, Check, FileText, Lightbulb, Loader2, PenLine, SquareTerminal, ChevronDown, LogOut, User, Activity, ChartBar, ActivitySquare, SatelliteIcon } from 'lucide-react';
+import { ChartColumn, Check, FileText, Lightbulb, Loader2, PenLine, SquareTerminal, ChevronDown, LogOut, User, Activity, ChartBar, ActivitySquare, SatelliteIcon, Edit } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 import ChatInterface from '@/app/(user)/chat/[id]/chat-interface';
@@ -30,7 +30,6 @@ import { useLogin } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { ActivityLogIcon } from '@radix-ui/react-icons';
 
 function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, isLoading: boolean, handleLogout: any }) {
   const router = useRouter();
@@ -94,7 +93,16 @@ function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, is
           </DropdownMenuContent>
         </DropdownMenu>
 
-      </div> : <Button onClick={login} className='rounded-full'>Login</Button>
+      </div> : <div className='flex gap-2 items-center'>
+        <button
+          onClick={() => router.push('/home')}
+          className={`py-2 px-4 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+        >
+          <Edit size={16} strokeWidth={3} />
+          New Chat
+        </button>
+        <Button onClick={login} className='rounded-full'>Login</Button>
+      </div>
     }
   </div>
 }

@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { SavedPrompt } from '@prisma/client';
 import { Attachment, JSONValue } from 'ai';
 import { useChat } from 'ai/react';
-import { ChartColumn, Check, FileText, Lightbulb, Loader2, PenLine, SquareTerminal, ChevronDown, LogOut, User } from 'lucide-react';
+import { ChartColumn, Check, FileText, Lightbulb, Loader2, PenLine, SquareTerminal, ChevronDown, LogOut, User, Activity, ChartBar, ActivitySquare, SatelliteIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 import ChatInterface from '@/app/(user)/chat/[id]/chat-interface';
@@ -30,6 +30,7 @@ import { useLogin } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { ActivityLogIcon } from '@radix-ui/react-icons';
 
 function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, isLoading: boolean, handleLogout: any }) {
   const router = useRouter();
@@ -242,39 +243,39 @@ export function HomeContent() {
         <BlurFade delay={0.3}>
           <div className='flex flex-wrap gap-3 px-0 sm:px-3 w-full'>
             <button
-              onClick={() => setType('analyze')}
-              className={`${type === 'analyze' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+              onClick={() => { setType('Trending collections today'); setInput('Trending collections today') }}
+              className={`${type === 'Trending collections today' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
             >
               <ChartColumn size={16} color="#52b7cb" strokeWidth={3} />
-              Analyze data
+              Trending collections this week
             </button>
             <button
-              onClick={() => setType('brainstorm')}
-              className={`${type === 'brainstorm' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+              onClick={() => { setType('Trending runes today'); setInput('Trending runes today') }}
+              className={`${type === 'Trending runes today' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
             >
-              <Lightbulb size={16} color="#e6af19" strokeWidth={3} />
-              Brainstorm
+              <ChartBar size={16} color="#52b7cb" strokeWidth={3} />
+              Trending runes today
             </button>
             <button
-              onClick={() => setType('text')}
-              className={`${type === 'text' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+              onClick={() => { setType('Recent activities for DOG•GO•TO•THE•MOON'); setInput('Recent activities for DOG•GO•TO•THE•MOON') }}
+              className={`${type === 'Recent activities for DOG•GO•TO•THE•MOON' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
             >
-              <FileText size={16} color="#e17833" strokeWidth={3} />
-              Summarize text
+              <Activity size={16} color="#c560e1" strokeWidth={3} />
+              Recent activities for DOG•GO•TO•THE•MOON
             </button>
             <button
-              onClick={() => setType('help')}
-              className={`${type === 'help' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+              onClick={() => { setType('Recent activities for nodemonkes'); setInput('Recent activities for nodemonkes') }}
+              className={`${type === 'Recent activities for nodemonkes' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
             >
-              <PenLine size={16} color="#c560e1" strokeWidth={3} />
-              Help me write
+              <ActivitySquare size={16} color='#4825a7' strokeWidth={3} />
+              Recent activities for nodemonkes
             </button>
             <button
-              onClick={() => setType('code')}
-              className={`${type === 'code' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+              onClick={() => { setType('Bitcoin price today'); setInput('Bitcoin price today') }}
+              className={`${type === 'Bitcoin price today' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
             >
-              <SquareTerminal size={16} color='#4825a7' strokeWidth={3} />
-              Code
+              <SatelliteIcon size={16} color="#e6af19" strokeWidth={3} />
+              Bitcoin price today
             </button>
           </div>
         </BlurFade>

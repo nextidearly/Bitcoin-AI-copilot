@@ -859,7 +859,7 @@ export const magicEdenTools = {
   getPopularRunes: {
     displayName: '🔥 Popular Runes',
     description:
-      'Get the most popular runes on volume and activity.',
+      'Get the most popular and trending runes on volume and activity.',
     parameters: z.object({
       timeRange: z
         .enum(['1h', '1d', '7d', '30d'])
@@ -874,7 +874,7 @@ export const magicEdenTools = {
     }) => {
       try {
         const response = await fetch(
-          `https://api-mainnet.magiceden.dev/v2/ord/btc/runes/collection_stats/search?offset=0&limit=10&sort=volume&direction=desc&window=${timeRange}&isVerified=false&filter=%7B%22allCollections%22:true%7D`,
+          `https://api-mainnet.magiceden.dev/v2/ord/btc/runes/collection_stats/search?offset=0&limit=10&sort=volume&direction=desc&window=${timeRange}&isVerified=false&filter[allCollections]=true`,
           {
             headers: {
               accept: 'application/json',
@@ -890,6 +890,7 @@ export const magicEdenTools = {
         }
 
         const data = (await response.json()).runes as MagicEdenRunes[];
+        console.log(data);
 
         return {
           suppressFollowUp: true,

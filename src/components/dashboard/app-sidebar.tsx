@@ -21,6 +21,7 @@ import {
 import { AppSidebarConversations } from './app-sidebar-conversations';
 import { AppSidebarUser } from './app-sidebar-user';
 import Logo from '../logo';
+import { useUser } from '@/hooks/use-user';
 
 const AppSidebarHeader = () => {
   return (
@@ -65,6 +66,7 @@ const ExploreItems = [
 ] as const;
 
 export function AppSidebar() {
+  const { user } = useUser();
   const pathname = usePathname();
 
   const getIsActive = (itemSegment: string) => {
@@ -73,6 +75,10 @@ export function AppSidebar() {
     }
     return pathname.startsWith(`/${itemSegment}`);
   };
+
+  if (!user) {
+    return <></>;
+  }
 
   return (
     <Sidebar variant="sidebar" collapsible="icon" className="hidden md:flex">

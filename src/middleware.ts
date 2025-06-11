@@ -80,12 +80,12 @@ export async function middleware(req: NextRequest) {
   }
 
   // Handle unauthenticated cases
-  if (!definitelyAuthenticated && !maybeAuthenticated) {
-    const loginUrl = new URL('/', req.url);
-    // Ensure redirect_uri is the current page path
-    loginUrl.searchParams.set('redirect_uri', pathname);
-    return NextResponse.redirect(loginUrl);
-  }
+  // if (!definitelyAuthenticated && !maybeAuthenticated) {
+  //   const loginUrl = new URL('/', req.url);
+  //   // Ensure redirect_uri is the current page path
+  //   loginUrl.searchParams.set('redirect_uri', pathname);
+  //   return NextResponse.redirect(loginUrl);
+  // }
 
   return response;
 }

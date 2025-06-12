@@ -72,7 +72,7 @@ export async function middleware(req: NextRequest) {
   const maybeAuthenticated = Boolean(cookieSession); // User might be authenticated (has session)
 
   // Handle token refresh cases
-  if (!definitelyAuthenticated && maybeAuthenticated && !req.url.includes('home')) {
+  if (!definitelyAuthenticated && maybeAuthenticated) {
 
     const redirectUrl = new URL('/refresh', req.url);
     // Ensure redirect_uri is the current page path
@@ -81,7 +81,7 @@ export async function middleware(req: NextRequest) {
   }
 
   // Handle unauthenticated cases
-  if (!definitelyAuthenticated && !maybeAuthenticated && !req.url.includes('home')) {
+  if (!definitelyAuthenticated && !maybeAuthenticated) {
     const loginUrl = new URL('/', req.url);
     // Ensure redirect_uri is the current page path
     loginUrl.searchParams.set('redirect_uri', pathname);

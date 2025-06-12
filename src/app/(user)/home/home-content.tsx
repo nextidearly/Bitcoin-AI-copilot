@@ -30,7 +30,6 @@ import { useLogin } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 
 function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, isLoading: boolean, handleLogout: any }) {
   const router = useRouter();
@@ -95,6 +94,7 @@ function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, is
         </DropdownMenu>
 
       </div> : <div className='flex gap-2 items-center'>
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a
             href="/"
             className="py-2 px-4 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl flex items-center gap-1 cursor-pointer hover:bg-muted duration-100"

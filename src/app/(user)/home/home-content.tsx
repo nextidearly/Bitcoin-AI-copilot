@@ -288,11 +288,11 @@ export function HomeContent() {
               Bitcoin price today
             </button>
             <button
-              onClick={() => { setType('Wallet balance [your address]'); setInput('Wallet balance [your address]') }}
-              className={`${type === 'Wallet balance [your address]' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+              onClick={() => { setType('Wallet portfolio [your address]'); setInput('Wallet portfolio [your address]') }}
+              className={`${type === 'Wallet portfolio [your address]' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
             >
               <Banknote size={16} color="#a6af19" strokeWidth={3} />
-              Wallet balance of {`[your address]`}
+              Wallet portfolio of {`[your address]`}
             </button>
           </div>
         </BlurFade>

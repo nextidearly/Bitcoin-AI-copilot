@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { SavedPrompt } from '@prisma/client';
 import { Attachment, JSONValue } from 'ai';
 import { useChat } from 'ai/react';
-import { ChartColumn, Check, FileText, Lightbulb, Loader2, PenLine, SquareTerminal, ChevronDown, LogOut, User, Activity, ChartBar, ActivitySquare, SatelliteIcon, Edit } from 'lucide-react';
+import { ChartColumn, Check, FileText, Lightbulb, Loader2, PenLine, SquareTerminal, ChevronDown, LogOut, User, Activity, ChartBar, ActivitySquare, SatelliteIcon, Edit, Banknote } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 import ChatInterface from '@/app/(user)/chat/[id]/chat-interface';
@@ -286,6 +286,13 @@ export function HomeContent() {
             >
               <SatelliteIcon size={16} color="#e6af19" strokeWidth={3} />
               Bitcoin price today
+            </button>
+            <button
+              onClick={() => { setType('Wallet balance [your address]'); setInput('Wallet balance [your address]') }}
+              className={`${type === 'Wallet balance [your address]' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+            >
+              <Banknote size={16} color="#a6af19" strokeWidth={3} />
+              Wallet balance of {`[your address]`}
             </button>
           </div>
         </BlurFade>

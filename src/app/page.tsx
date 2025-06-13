@@ -110,7 +110,7 @@ export default function Home() {
               <h1 className="heading-3">© 2023 BitX | All Rights Reserved</h1>
             </div>
             <div className="column-3 w-col w-col-6">
-              <h1 className="heading-3">Don't trust, Verify!</h1>
+              <h1 className="heading-3">{`Don't`} trust, Verify!</h1>
             </div>
           </div>
         </div>

@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { useUser } from '@/hooks/use-user';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar:state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -278,7 +279,12 @@ const SidebarTrigger = React.forwardRef<
   React.ElementRef<typeof Button>,
   React.ComponentProps<typeof Button>
   >(({ className, onClick, ...props }, ref) => {
+    const { user } = useUser(); 
   const { toggleSidebar } = useSidebar();
+
+    if (!user) {
+      return <></>;
+    }
 
   return (
     <Button

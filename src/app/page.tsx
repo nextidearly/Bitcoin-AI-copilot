@@ -22,7 +22,7 @@ export default function Home() {
 
         <div className="div-block-4">
           <div>
-            <div className="">
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div
                 className="w-col w-col-6 items-center"
                 style={{ display: "flex", alignItems: "center" }}
@@ -94,7 +94,7 @@ export default function Home() {
           <div style={{ display: "flex", justifyContent: "center" }}>
             <div className="button-block">
               <Link className="btn btn-outline-primary button-app" href="/home" style={{ background: "white", textAlign: "center", textDecoration: "none", color: "#333333" }}>
-                <span className="button-h">Start Chat</span>
+                <span className="button-h">Chat</span>
               </Link>
               <button
                 className="btn btn-outline-light button-app border border-white"

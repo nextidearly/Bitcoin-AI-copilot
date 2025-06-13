@@ -105,7 +105,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="columns w-row">
+          <div style={{ display: "flex", justifyContent: "space-between", width: '100%' }}>
             <div className="column-2 w-col w-col-6">
               <h1 className="heading-3">© 2023 BitX | All Rights Reserved</h1>
             </div>

@@ -1,0 +1,265 @@
+.main {
+  width: 100vw;
+  height: 100vh;
+  background-color: #181818;
+  overflow: hidden;
+}
+
+.html-embed {
+  filter: blur(9px);
+  position: absolute;
+  top: 0%;
+  bottom: 0%;
+  left: 0%;
+  right: 0%;
+}
+
+.menu {
+  z-index: 99;
+  height: 4vw;
+  background-color: #000;
+  border-bottom: 1px solid #1b1b1b;
+  padding-left: 20px;
+  padding-right: 20px;
+  display: flex;
+  position: relative;
+}
+
+.left {
+  width: 50%;
+  height: 100%;
+}
+
+.right {
+  width: 50%;
+  height: 100%;
+  grid-column-gap: 20px;
+  grid-row-gap: 20px;
+  justify-content: flex-end;
+  align-items: center;
+  display: flex;
+}
+
+.logo {
+  width: 5vw;
+  height: 100%;
+  border-right: 1px solid #1b1b1b;
+  justify-content: flex-start;
+  align-items: center;
+  display: flex;
+}
+
+.heading {
+  color: #fff;
+  letter-spacing: -3px;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: Montserrat, sans-serif;
+  font-size: 2vw;
+}
+
+.btn-group {
+  grid-column-gap: 20px;
+  grid-row-gap: 20px;
+  display: flex;
+}
+
+.button {
+  color: #fff;
+  background-color: #c24700;
+  border-radius: 5px;
+  padding: 14px 30px;
+  font-family: Cabinetgrotesk Medium, sans-serif;
+  font-size: .8vw;
+  font-weight: 500;
+  transition: all .2s cubic-bezier(.47, 0, .745, .715);
+}
+
+.button:hover {
+  background-color: #000;
+  border: 1px solid #c24700;
+}
+
+.button-2 {
+  background-color: #222;
+  border-radius: 5px;
+  padding: 14px 30px;
+  font-family: Cabinetgrotesk Medium, sans-serif;
+  font-size: .8vw;
+  font-weight: 500;
+  transition: all .2s cubic-bezier(.47, 0, .745, .715);
+}
+
+.button-2:hover {
+  border: 1px solid #c24700;
+}
+
+.hero {
+  z-index: 99;
+  height: 100%;
+  position: relative;
+}
+
+.main-text {
+  margin-top: 40px;
+  margin-left: 20px;
+}
+
+.heading-2 {
+  color: #fff;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: Cabinetgrotesk Bold, sans-serif;
+  font-size: 6vw;
+  font-weight: 500;
+  line-height: 119%;
+}
+
+.footer {
+  z-index: 9999;
+  margin-left: 20px;
+  margin-right: 20px;
+  position: absolute;
+  top: auto;
+  bottom: 15%;
+  left: 0%;
+  right: 0%;
+}
+
+.link-block {
+  background-color: #000;
+  border-radius: 5px;
+  justify-content: center;
+  align-items: center;
+  padding: 7px;
+  display: flex;
+}
+
+.link-block:hover {
+  border: 1px solid #fc5c00;
+}
+
+.image {
+  width: 1.7vw;
+}
+
+.image.twitter, .image.docs {
+  width: 1.5vw;
+}
+
+.column {
+  grid-column-gap: 20px;
+  grid-row-gap: 20px;
+  justify-content: flex-end;
+  padding-left: 0;
+  padding-right: 0;
+  display: flex;
+}
+
+.text-block {
+  color: #d8d8d8;
+  font-family: Cabinetgrotesk Regular, sans-serif;
+  font-size: 1vw;
+}
+
+.image-2 {
+  width: 4vw;
+}
+
+@media screen and (max-width: 479px) {
+
+  .footer {
+    bottom: 21%;
+}
+  .menu {
+    height: 23vw;
+  }
+
+  .logo {
+    width: 17vw;
+  }
+
+  .heading {
+    font-size: 7vw;
+  }
+
+  .button, .button-2 {
+    padding: 5px 10px;
+    font-size: 4vw;
+  }
+
+  .heading-2 {
+    font-size: 13vw;
+  }
+
+  .image, .image.twitter, .image.docs {
+    width: 7vw;
+  }
+
+  .column {
+    justify-content: center;
+  }
+
+  .text-block {
+    text-align: center;
+    padding-bottom: 20px;
+    font-size: 3vw;
+    line-height: 18px;
+  }
+
+  .image-2 {
+    width: 11vw;
+  }
+}
+
+
+@font-face {
+  font-family: 'Cabinetgrotesk Black';
+  src: url('../fonts/CabinetGrotesk-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cabinetgrotesk Bold';
+  src: url('../fonts/CabinetGrotesk-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cabinetgrotesk';
+  src: url('../fonts/CabinetGrotesk-Extrabold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cabinetgrotesk';
+  src: url('../fonts/CabinetGrotesk-Extralight.woff2') format('woff2');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cabinetgrotesk Light';
+  src: url('../fonts/CabinetGrotesk-Light.woff2') format('woff2'), url('../fonts/CabinetGrotesk-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cabinetgrotesk Medium';
+  src: url('../fonts/CabinetGrotesk-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cabinetgrotesk Regular';
+  src: url('../fonts/CabinetGrotesk-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+

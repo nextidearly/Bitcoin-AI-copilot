@@ -24,7 +24,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: {
     template: '%s | Bitx',
-    default: 'Bitx - The Intelligent Copilot for Solana',
+    default: 'Bitx - The Intelligent Copilot for Bitcoin',
   },
   description: 'The Intelligent Copilot elevating your Bitcoin experience.',
 

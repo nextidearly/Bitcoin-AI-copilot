@@ -50,19 +50,19 @@ function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, is
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <div className='flex gap-1 items-center hover:bg-muted py-2 px-3 rounded-lg cursor-pointer'>
-            <span className='text-lg'>ORD-GPT</span>
+            <span className='sm:text-lg'>ORD-GPT</span>
             <ChevronDown size={18} className='text-gray-400' />
           </div>
 
         </DropdownMenuTrigger>
         <DropdownMenuContent side="bottom" align="start" className='min-w-56 p-2 rounded-lg gap-0'>
           <DropdownMenuItem className='cursor-pointer w-full p-0'>
-            <div className='rounded-lg hover:bg-muted w-full p-2 flex justify-between items-center'>
+            <div className='rounded-lg hover:bg-muted w-full p-2 flex justify-between items-center sm:text-lg text-base'>
               <span>ORD-GPT</span>
               <Check size={18} />
             </div>
           </DropdownMenuItem>
-          <DropdownMenuItem className='w-full p-0 cursor-not-allowed text-gray-400'>
+          <DropdownMenuItem className='w-full p-0 cursor-not-allowed text-gray-400 sm:text-lg text-base'>
             <div className='rounded-lg hover:bg-muted w-full p-2'>Bitcoin-GPT</div>
           </DropdownMenuItem>
         </DropdownMenuContent>

@@ -276,7 +276,7 @@ export function HomeContent() {
             </button>
             <button
               onClick={() => { setType('Recent activities for DOG•GO•TO•THE•MOON'); setInput('Recent activities for DOG•GO•TO•THE•MOON') }}
-              className={`${type === 'Recent activities for DOG•GO•TO•THE•MOON' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+              className={`${type === 'Recent activities for DOG•GO•TO•THE•MOON' && 'bg-muted'} text-start py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
             >
               <Activity size={16} color="#c560e1" strokeWidth={3} />
               Recent activities for DOG•GO•TO•THE•MOON

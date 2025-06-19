@@ -82,13 +82,13 @@ export default function Home() {
             </div>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <div style={{ width: "75%" }}>
-              <div style={{ display: "flex", justifyContent: "center", alignItems: 'center' }}>
-                <h1 className="heading">The ChatGPT of </h1>
-                <img src="/images/btc.webp" alt="btc" style={{ width: "132px", marginLeft: "16px" }} />
+          <div className="app-container">
+            <div className="app-content-wrapper">
+              <div className="app-title-container">
+                <h1 className="app-heading">The ChatGPT of </h1>
+                <img src="/images/btc.webp" alt="btc" className="app-btc-image" />
               </div>
-              <h2 className="description-text">
+              <h2 className="app-description-text">
                 Intelligent Copilot elevating your Bitcoin➕Ordinals experience
               </h2>
             </div>

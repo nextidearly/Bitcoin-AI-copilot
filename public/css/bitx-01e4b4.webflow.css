@@ -350,6 +350,60 @@
 
 }
 
+.app-container {
+  font-family: 'Baseneuetrial bf63d645e77951b';
+  display: flex;
+  justify-content: center;
+}
+
+.app-content-wrapper {
+  width: 100%;
+}
+
+.app-title-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app-heading {
+  font-size: 6rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.app-btc-image {
+  width: 132px;
+  margin-left: 16px;
+}
+
+.app-description-text {
+  font-size: 2rem;
+  text-align: center;
+  margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+  .app-title-container {
+    flex-direction: column;
+  }
+
+  .app-heading {
+    font-size: 2.3rem;
+    margin: 0 0 16px 0;
+  }
+
+  .app-btc-image {
+    width: 150px;
+    margin-top: -30px;
+    margin-left: 0;
+  }
+
+  .app-description-text {
+    font-size: 1rem;
+    margin-top: 4px;
+  }
+}
 @font-face {
   font-family: 'Baseneuetrial bf63d645e77951b';
   src: url('../fonts/BaseNeueTrial-Bold-BF63d645e77951b.ttf') format('truetype');

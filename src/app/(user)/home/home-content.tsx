@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { SavedPrompt } from '@prisma/client';
 import { Attachment, JSONValue } from 'ai';
 import { useChat } from 'ai/react';
-import { ChartColumn, Check, FileText, Lightbulb, Loader2, PenLine, SquareTerminal, ChevronDown, LogOut, User, Activity, ChartBar, ActivitySquare, SatelliteIcon, Edit, Banknote } from 'lucide-react';
+import { ChartColumn, Check, ChevronDown, LogOut, User, Activity, ChartBar, ActivitySquare, SatelliteIcon, Edit, Banknote } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 import ChatInterface from '@/app/(user)/chat/[id]/chat-interface';
@@ -45,7 +45,15 @@ function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, is
     },
   });
 
-  return <div className='w-full flex justify-end sm:justify-between px-3.5 items-center py-3.5 sm:pt-2 relative z-40'>
+  return <div className='w-full flex justify-between px-3.5 items-center py-3.5 sm:pt-2 relative z-40'>
+    <a
+      href="/"
+      className="py-2 px-4 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl flex sm:hidden items-center gap-1 cursor-pointer hover:bg-muted duration-100"
+    >
+      <Edit size={16} strokeWidth={3} />
+      New
+    </a>
+
     <div className='absolute sm:relative left-1/2 sm:left-0 top-1/2 -translate-x-1/2 sm:-translate-x-0 -translate-y-1/2 sm:-translate-y-0 '>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -97,7 +105,7 @@ function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, is
           {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a
             href="/"
-            className="py-2 px-4 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl flex items-center gap-1 cursor-pointer hover:bg-muted duration-100"
+            className="py-2 px-4 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl hidden sm:flex items-center gap-1 cursor-pointer hover:bg-muted duration-100"
           >
             <Edit size={16} strokeWidth={3} />
             New Chat

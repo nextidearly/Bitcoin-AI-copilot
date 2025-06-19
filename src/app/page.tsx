@@ -84,9 +84,12 @@ export default function Home() {
 
           <div style={{ display: "flex", justifyContent: "center" }}>
             <div style={{ width: "75%" }}>
-              <h1 className="heading">BitX Bitcoin AI Copilot</h1>
+              <div style={{ display: "flex", justifyContent: "center", alignItems: 'center' }}>
+                <h1 className="heading">The ChatGPT of </h1>
+                <img src="/images/btc.webp" alt="btc" style={{ width: "132px", marginLeft: "16px" }} />
+              </div>
               <h2 className="description-text">
-                Intelligent Copilot elevating your Bitcoin experience
+                Intelligent Copilot elevating your Bitcoin➕Ordinals experience
               </h2>
             </div>
           </div>

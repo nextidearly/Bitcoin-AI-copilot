@@ -62,7 +62,7 @@ export default function Home() {
                     className="w-inline-block"
                   >
                     <img
-                      src="/images/twitter.png"
+                      src="/images/x1.png"
                       className="image"
                       alt="twitter"
                     />
@@ -110,10 +110,10 @@ export default function Home() {
 
           <div style={{ display: "flex", justifyContent: "space-between", width: '100%' }}>
             <div className="column-2 w-col w-col-6">
-              <h1 className="heading-3">© 2023 BitX | All Rights Reserved</h1>
+              <h1 className="heading-3">© 2025 BitX </h1>
             </div>
             <div className="column-3 w-col w-col-6">
-              <h1 className="heading-3">{`Don't`} trust, Verify!</h1>
+              <h1 className="heading-3">{`All`} rights reserved</h1> 
             </div>
           </div>
         </div>

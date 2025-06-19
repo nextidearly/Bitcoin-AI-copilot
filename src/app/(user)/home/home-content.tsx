@@ -45,32 +45,24 @@ function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, is
     },
   });
 
-  return <div className='w-full flex justify-between px-3.5 items-center py-3.5 sm:pt-2 relative z-40'>
-    <a
-      href="/"
-      className="py-2 px-4 flex sm:hidden border border-muted-foreground/10 text-sm sm:text-base rounded-3xl items-center gap-1 cursor-pointer hover:bg-muted duration-100"
-    >
-      <Edit size={16} strokeWidth={3} />
-      New
-    </a>
-
+  return <div className='w-full flex justify-end sm:justify-between px-3.5 items-center py-3.5 sm:pt-2 relative z-40'>
     <div className='absolute sm:relative left-1/2 sm:left-0 top-1/2 -translate-x-1/2 sm:-translate-x-0 -translate-y-1/2 sm:-translate-y-0 '>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <div className='flex gap-1 items-center hover:bg-muted py-2 px-3 rounded-lg cursor-pointer'>
-            <span className='sm:text-lg'>ORD-GPT</span>
+            <span className='text-lg'>ORD-GPT</span>
             <ChevronDown size={18} className='text-gray-400' />
           </div>
 
         </DropdownMenuTrigger>
         <DropdownMenuContent side="bottom" align="start" className='min-w-56 p-2 rounded-lg gap-0'>
           <DropdownMenuItem className='cursor-pointer w-full p-0'>
-            <div className='rounded-lg hover:bg-muted w-full p-2 flex justify-between items-center sm:text-lg text-base'>
+            <div className='rounded-lg hover:bg-muted w-full p-2 flex justify-between items-center'>
               <span>ORD-GPT</span>
               <Check size={18} />
             </div>
           </DropdownMenuItem>
-          <DropdownMenuItem className='w-full p-0 cursor-not-allowed text-gray-400 sm:text-lg text-base'>
+          <DropdownMenuItem className='w-full p-0 cursor-not-allowed text-gray-400'>
             <div className='rounded-lg hover:bg-muted w-full p-2'>Bitcoin-GPT</div>
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -105,7 +97,7 @@ function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, is
           {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a
             href="/"
-            className="py-2 px-4 hidden sm:flex border border-muted-foreground/10 text-sm sm:text-base rounded-3xl items-center gap-1 cursor-pointer hover:bg-muted duration-100"
+            className="py-2 px-4 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl flex items-center gap-1 cursor-pointer hover:bg-muted duration-100"
           >
             <Edit size={16} strokeWidth={3} />
             New Chat
@@ -276,7 +268,7 @@ export function HomeContent() {
             </button>
             <button
               onClick={() => { setType('Recent activities for DOG•GO•TO•THE•MOON'); setInput('Recent activities for DOG•GO•TO•THE•MOON') }}
-              className={`${type === 'Recent activities for DOG•GO•TO•THE•MOON' && 'bg-muted'} text-start py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+              className={`${type === 'Recent activities for DOG•GO•TO•THE•MOON' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
             >
               <Activity size={16} color="#c560e1" strokeWidth={3} />
               Recent activities for DOG•GO•TO•THE•MOON

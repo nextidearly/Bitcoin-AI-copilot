@@ -46,6 +46,7 @@ function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, is
   });
 
   return <div className='w-full flex justify-between px-3.5 items-center py-3.5 sm:pt-2 relative z-40 bg-background'>
+    {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
     <a
       href="/"
       className="py-2 px-4 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl flex sm:hidden items-center gap-1 cursor-pointer hover:bg-muted duration-100"

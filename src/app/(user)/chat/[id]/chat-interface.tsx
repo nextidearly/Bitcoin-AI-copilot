@@ -409,9 +409,9 @@ function ChatMessage({
         index === 0 && 'mt-0',
       )}
     >
-      <div className="group relative flex sm:max-w-[85%] flex-row items-center">
+      <div className="group relative flex  flex-row items-center sm:w-fit">
         <div
-          className={cn('relative gap-2', isUser ? 'items-end' : 'items-start')}
+          className={cn('relative gap-2 w-fit', isUser ? 'items-end' : 'items-start w-full')}
         >
           {hasAttachments && (
             <div
@@ -586,7 +586,7 @@ function ImagePreviewDialog({
 function LoadingMessage() {
   return (
     <div className="flex w-full items-start gap-3">
-      <div className="relative flex sm:max-w-[85%] flex-col items-start gap-2">
+      <div className="relative flex  flex-col items-start gap-2">
         <div className="relative flex flex-col gap-2 rounded-2xl text-sm">
           <div className="flex items-center gap-1">
             <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-foreground/50 [animation-delay:-0.3s]" />
@@ -711,7 +711,6 @@ export default function ChatInterface({
 
   return (
     <div className="flex h-full flex-col">
-      <InterfaceHeader user={user as BitxUser} isLoading={isUserLoading} handleLogout={logout} />
 
       <div className="no-scrollbar relative flex-1 overflow-y-auto">
         <div className="mx-auto w-full max-w-3xl">

@@ -45,6 +45,7 @@
     "@remixicon/react": "^4.6.0",
     "@solana/spl-token": "^0.4.9",
     "@solana/web3.js": "1.98.0",
+    "@tremor/react": "^3.18.7",
     "@types/js-cookie": "^3.0.6",
     "@vercel/analytics": "^1.4.1",
     "@vercel/speed-insights": "^1.1.0",

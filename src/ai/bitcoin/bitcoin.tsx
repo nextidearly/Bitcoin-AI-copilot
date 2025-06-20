@@ -4,6 +4,8 @@ import { ExternalLink } from 'lucide-react';
 import { z } from 'zod';
 
 import { formatNumber } from '@/lib/format';
+import { getBitcoinPrice, getBitcoinPriceHistory } from '@/lib/crypto-api';
+import { BitcoinChart } from '@/components/bitcoin-price-chart';
 
 export interface BitcoinPriceData {
   price: number;
@@ -53,28 +55,6 @@ interface BitcoinWalletData {
   brc20: BRC20Token[];
   runes: RuneBalance[];
   lastUpdated: string;
-}
-
-export async function getBitcoinPrice(): Promise<BitcoinPriceData> {
-  try {
-    const response = await fetch(
-      'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd',
-    );
-    const data = await response.json();
-
-    return {
-      price: data.bitcoin.usd,
-      lastUpdated: new Date().toISOString(),
-      source: 'CoinGecko',
-    };
-  } catch (error) {
-    console.error('Failed to fetch Bitcoin price:', error);
-    return {
-      price: 84847,
-      lastUpdated: new Date().toISOString(),
-      source: 'Mock Data',
-    };
-  }
 }
 
 async function fetchWalletUTXOs(address: string): Promise<BitcoinUTXO[]> {
@@ -442,15 +422,24 @@ export const bitcoinRunesTool = {
 // 6. Bitcoin price Tool
 export const getBitcoinPriceTool = {
   getBitcoinPrice: {
-    displayName: '💰 Get Bitcoin Price',
-    description: 'Get the current price of Bitcoin (BTC) in USD',
-    parameters: z.object({}), // No parameters needed
-    execute: async () => {
+    displayName: '💰 Bitcoin Price Tracker',
+    description: 'Get the current price and historical chart of Bitcoin (BTC) in USD',
+    parameters: z.object({
+      timeframe: z.enum(['24h', '7d', '30d', '90d']).optional().default('24h')
+    }),
+    execute: async ({ timeframe }: { timeframe: '24h' | '7d' | '30d' | '90d' }) => {
       try {
-        const priceData = await getBitcoinPrice();
+        const [currentPrice, priceHistory] = await Promise.all([
+          getBitcoinPrice(),
+          getBitcoinPriceHistory(timeframe)
+        ]);
+
         return {
           success: true,
-          data: priceData,
+          data: {
+            current: currentPrice,
+            history: priceHistory
+          },
         };
       } catch (error) {
         return {
@@ -458,25 +447,33 @@ export const getBitcoinPriceTool = {
           error:
             error instanceof Error
               ? error.message
-              : 'Failed to fetch Bitcoin price',
+              : 'Failed to fetch Bitcoin data',
         };
       }
     },
     render: (result: unknown) => {
-
       const typedResult = result as {
         success: boolean;
         data?: {
-          price: number;
-          lastUpdated: string;
-          source: string;
+          current: {
+            price: number;
+            lastUpdated: string;
+            source: string;
+            change24h?: number;
+            high24h?: number;
+            low24h?: number;
+          };
+          history: Array<{
+            timestamp: string;
+            price: number;
+          }>;
         };
         error?: string;
       };
 
       if (!typedResult.success) {
         return (
-          <div className="relative overflow-hidden rounded-md bg-destructive/5 p-4">
+          <div className="relative overflow-hidden rounded-lg bg-destructive/5 p-4 border border-destructive/20">
             <div className="flex items-center gap-3">
               <p className="text-sm text-destructive">
                 Error: {typedResult.error}
@@ -488,7 +485,7 @@ export const getBitcoinPriceTool = {
 
       if (!typedResult.data) {
         return (
-          <div className="relative overflow-hidden rounded-md bg-muted/50 p-4">
+          <div className="relative overflow-hidden rounded-lg bg-muted/50 p-4 border">
             <div className="flex items-center gap-3">
               <p className="text-sm text-muted-foreground">
                 No price data available
@@ -498,38 +495,54 @@ export const getBitcoinPriceTool = {
         );
       }
 
-      const { price, lastUpdated, source } = typedResult.data;
+      const { current, history } = typedResult.data;
+      const { price, lastUpdated, source, change24h, high24h, low24h } = current;
       const formattedPrice = formatNumber(price, 'currency');
+      const formattedChange = change24h ? formatNumber(change24h, 'percent') : null;
+      const isPositiveChange = change24h ? change24h >= 0 : null;
 
       return (
-        <div className="relative overflow-hidden rounded-md bg-muted/50 p-4">
-          <div className="flex items-center gap-3">
-            <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl">
-              <Image
-                src="https://s2.coinmarketcap.com/static/img/coins/64x64/1.png"
-                alt="Bitcoin"
-                className="object-cover"
-                fill
-                sizes="40px"
-              />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                <h3 className="truncate text-base font-medium">Bitcoin</h3>
-                <span className="shrink-0 rounded-md bg-background/50 px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                  BTC
-                </span>
+        <div className="relative overflow-hidden rounded-lg bg-background border p-4 space-y-6">
+          {/* Header with basic info */}
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl">
+                <Image
+                  src="https://s2.coinmarketcap.com/static/img/coins/64x64/1.png"
+                  alt="Bitcoin"
+                  className="object-cover"
+                  fill
+                  sizes="40px"
+                />
               </div>
-              <div className="mt-1 flex flex-col gap-1">
-                <span className="text-lg font-semibold">{formattedPrice}</span>
-                <div className="mt-1 text-xs text-muted-foreground">
-                  <span>Updated: {new Date(lastUpdated).toLocaleString()}</span>
-                  <span className="mx-1">•</span>
-                  <span>Source: {source}</span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-semibold">Bitcoin</h3>
+                  <span className="shrink-0 rounded-md bg-muted px-2 py-0.5 text-xs font-medium">
+                    BTC
+                  </span>
                 </div>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {source} • Updated: {new Date(lastUpdated).toLocaleString()}
+                </p>
               </div>
+            </div>
+
+            <div className="text-right">
+              <div className="text-2xl font-bold">{formattedPrice}</div>
+              {formattedChange && (
+                <div className={`text-sm ${isPositiveChange ? 'text-green-500' : 'text-red-500'} font-medium`}>
+                  {isPositiveChange ? '↑' : '↓'} {formattedChange} (24h)
+                </div>
+              )}
             </div>
           </div>
+
+          {/* Price chart */}
+          <div className="h-64 w-full">
+            <BitcoinChart data={history} />
+          </div>
+
         </div>
       );
     },

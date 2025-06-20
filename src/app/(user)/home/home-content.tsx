@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { SavedPrompt } from '@prisma/client';
 import { Attachment, JSONValue } from 'ai';
 import { useChat } from 'ai/react';
-import { ChartColumn, Check, ChevronDown, LogOut, User, Activity, ChartBar, ActivitySquare, SatelliteIcon, Edit, Banknote } from 'lucide-react';
+import { ChartColumn, Check, ChevronDown, LogOut, User, Activity, ChartBar, ActivitySquare, SatelliteIcon, Edit, Banknote, SatelliteDish } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 import ChatInterface from '@/app/(user)/chat/[id]/chat-interface';
@@ -45,7 +45,7 @@ function InterfaceHeader({ user, isLoading, handleLogout }: { user: BitxUser, is
     },
   });
 
-  return <div className='w-full flex justify-between px-3.5 items-center py-3.5 sm:pt-2 relative z-40'>
+  return <div className='w-full flex justify-between px-3.5 items-center py-3.5 sm:pt-2 relative z-40 bg-background'>
     <a
       href="/"
       className="py-2 px-4 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl flex sm:hidden items-center gap-1 cursor-pointer hover:bg-muted duration-100"
@@ -296,6 +296,13 @@ export function HomeContent() {
               Bitcoin price today
             </button>
             <button
+              onClick={() => { setType('Bitcoin network status now'); setInput('Bitcoin network status now') }}
+              className={`${type === 'Bitcoin network status now' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+            >
+              <SatelliteDish size={16} color="#c560e1" strokeWidth={3} />
+              Bitcoin network status now
+            </button>
+            <button
               onClick={() => { setType('Wallet portfolio [your address]'); setInput('Wallet portfolio [your address]') }}
               className={`${type === 'Wallet portfolio [your address]' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
             >
@@ -315,7 +322,7 @@ export function HomeContent() {
       {!showChat && (
         <div
           className={cn(
-            'absolute inset-0 overflow-y-auto overflow-x-hidden transition-opacity duration-300 ',
+            'absolute inset-0 overflow-y-auto overflow-x-hidden transition-opacity duration-300',
             showChat ? 'pointer-events-none opacity-0' : 'opacity-100',
           )}
         >
@@ -325,7 +332,7 @@ export function HomeContent() {
       {showChat && (
         <div
           className={cn(
-            'absolute inset-0 transition-opacity duration-300',
+            'absolute inset-0 transition-opacity duration-300 mt-14',
             showChat ? 'opacity-100' : 'pointer-events-none opacity-0',
           )}
         >

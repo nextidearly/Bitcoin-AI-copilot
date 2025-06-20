@@ -14,6 +14,7 @@ import { telegramTools } from './generic/telegram';
 import { utilTools } from './generic/util';
 import { bitcoinTools } from './bitcoin/bitcoin';
 import { magicEdenTools } from './bitcoin/magic-eden';
+import { mempoolTools } from './bitcoin/mempool';
 
 const usingAnthropic = !!process.env.ANTHROPIC_API_KEY;
 
@@ -145,6 +146,7 @@ export const defaultTools: Record<string, ToolConfig> = {
   ...telegramTools,
   ...magicEdenTools,
   ...bitcoinTools,
+  ...mempoolTools
 };
 
 export function filterTools(

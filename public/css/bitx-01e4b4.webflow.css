@@ -361,6 +361,7 @@
 }
 
 .app-title-container {
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -378,6 +379,7 @@
 }
 
 .app-description-text {
+  color: white;
   font-size: 2rem;
   text-align: center;
   margin-top: 16px;

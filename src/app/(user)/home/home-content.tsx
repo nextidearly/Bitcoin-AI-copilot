@@ -261,6 +261,13 @@ export function HomeContent() {
         <BlurFade delay={0.3}>
           <div className='flex flex-wrap gap-3 px-0 sm:px-3 w-full'>
             <button
+              onClick={() => { setType('Bitcoin price today'); setInput('Bitcoin price today') }}
+              className={`${type === 'Bitcoin price today' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
+            >
+              <SatelliteIcon size={16} color="#e6af19" strokeWidth={3} />
+              Bitcoin price today
+            </button>
+            <button
               onClick={() => { setType('Trending collections today'); setInput('Trending collections today') }}
               className={`${type === 'Trending collections today' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
             >
@@ -287,13 +294,6 @@ export function HomeContent() {
             >
               <ActivitySquare size={16} color='#4825a7' strokeWidth={3} />
               Recent activities for nodemonkes
-            </button>
-            <button
-              onClick={() => { setType('Bitcoin price today'); setInput('Bitcoin price today') }}
-              className={`${type === 'Bitcoin price today' && 'bg-muted'} py-2 px-3 border border-muted-foreground/10 text-sm sm:text-base rounded-3xl text-muted-foreground flex items-center gap-1 cursor-pointer hover:bg-muted duration-100`}
-            >
-              <SatelliteIcon size={16} color="#e6af19" strokeWidth={3} />
-              Bitcoin price today
             </button>
             <button
               onClick={() => { setType('Bitcoin network status now'); setInput('Bitcoin network status now') }}
